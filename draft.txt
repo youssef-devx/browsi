@@ -1,0 +1,152 @@
+1/
+
+Context: {
+  isDark: true,
+  setIsDark: setIsDark,
+  route: "mainPage",
+  setRoute: setRoute,
+  url: "http://google.com/",
+  setUrl: setUrl,
+  webViewProps: {
+    canGoBack
+    canGoForward
+    Other webview props.
+  },
+  setWebViewProps: setWebViewProps,
+  tabs: tabs,
+  setTabs: setTabs,
+  history: ,
+  setHistory: ,
+  bookmarks: bookmarks,
+  setBookmarks: setBookmarks,
+  pinnedWebsites: pinnedWebsites,
+  setPinnedWebsites: setPinnedWebsites
+  ...
+}
+
+User router stories:
+  - When app first launch open mainPage. [DONE]
+  - When backButton clicked on mainPage [make sure you want to exit app] popUp (now just prevent exit). [DONE]
+  
+  - When backButton clicked on routes exept mainPage return to previous route.
+  - When want to change route:
+    - Set previous route to current route.
+    - Set route to new(distination) route.
+    - Set showScreen to new showScreen object.
+
+#########################################################################################################################
+2/
+
+Router:
+  - Main Page:
+    Main Page --> Tabs
+    Tabs --> Main Page
+    Main Page --> History
+    History --> Main Page
+    Main Page --> BookMarks
+    History --> Main Page
+    Main Page --> Settings
+    Settings --> Main Page
+    Web Page --> Main Page
+    Main Page --> Web Page
+
+  - Tabs:
+    Tabs --> Main Page
+    Main Page --> Tabs
+    Tabs --> Web Page
+
+  - History:
+    History --> Main Page
+    Main Page --> History
+    History --> Web Page
+
+  - BookMarks:
+    BookMarks --> Main Page
+    Main Page --> BookMarks
+    BookMarks --> Web Page
+  
+  - Settings:
+    Settings --> Main Page
+    Main Page --> Settings
+
+  - Web Page:
+    Web Page --> Main Page
+    Main Page --> Web Page
+    Web Page --> Tabs
+    Tabs --> Web Page
+    Web Page --> History
+    History --> Web Page
+    Web Page --> BookMarks
+    History --> Web Page
+    Web Page --> Settings
+    Settings --> Web Page
+
+  Previous Routes Object: {
+    "mainPage": <prevRoute>,
+    "tabs": <prevRoute>,
+    "history": <prevRoute>,
+    "bookmarks": <prevRoute>,
+    "settings": <prevRoute>,
+  }
+
+  Router Logic:
+    Navigate To: (newRoute)
+      - When navigate to btn clicked set => route = newRoute.
+
+      - When navigate to btn clicked on mainPage set => prevRoutes["mainPage"] = newRoute.
+      - When navigate to btn clicked on tabs set => prevRoutes["tabs"] = newRoute. [DONE]
+      - When navigate to btn clicked on history set => prevRoutes["history"] = newRoute.
+      - When navigate to btn clicked on bookmarks set => prevRoutes["bookmarks"] = newRoute.
+      - When navigate to btn clicked on settings set => prevRoutes["settings"] = newRoute.
+
+    Returning Back: (prevRoute)
+      - When back btn clicked on mainPage return to => prevRoutes["mainPage"].
+      - When back btn clicked on tabs return to => prevRoutes["tabs"]. [DONE]
+      - When back btn clicked on history return to => prevRoutes["history"].
+      - When back btn clicked on bookmarks return to => prevRoutes["bookmarks"].
+      - When back btn clicked on settings return to => prevRoutes["settings"].
+
+* In useEffect check first if you are in the right route.
+
+#########################################################################################################################
+3/
+
+Screens: mainScreens, tabs, history, bookMarks, settings, webViews.
+
+Screens holder: tabs.
+
+Default screen: the first mainScreen.
+
+Other screens: all hidden.
+
+MainScreens screen can navigate to pinnedWebsites, tabs, history, bookMarks, settings.
+
+Tabs screen can navigate to mainScreens, webViews.
+
+WebViews screen can navigate to tabs(last screen), mainScreen(origin screen), history, bookMarks, settings.
+
+History screen can navigate to webViews, last screen.
+
+BookMarks screen can navigate to webViews, last screen.
+
+Settings screen can navigate to last screen.
+
+Settings and gettings screens:
+  1 - Default screen is mainScreen.
+  2 - When want to naviagte to a screen setScreen(<next-screen-name>) and setPrevScreen(<current-screen-name>).
+  3 - If there is not previous screen don't navigate(normaly it is mainScreen so stay in it).
+  4 - When native back button is clicked on a screen except mainScreen return to previous screen.
+
+What I need to do:
+  0 - [ CREATE A DUMPED_CODE FILE AND MOVE UNUSED CODE TO IT ]
+  1 - Render all mainScreens.
+  2 - Hide all other screens.
+  3 - When a pinnedWebsite is clicked create a new webView in tabs and keep the mainScreen.
+  4 - When tabs button clicked navigate to tabs.
+  5 - When history button clicked navigate to history.
+  6 - When bookMarks button clicked navigate to bookMarks.
+  7 - When settings button clicked navigate to settings.
+  8 - When back button reach end navigate to preceeding webView in tabs.
+  9 - Finish each screen completely then move to others.
+  10 - When on webViews add ability to pin webSites(if reaches more then 6 add it to bookMarks).
+
