@@ -149,9 +149,9 @@ export function HistoryPage({
   }
 
   function naviteToPage() {
-    const isWebPage = pageUrl !== "mainPage";
+    const isWebView = pageUrl !== "mainPage";
 
-    if (!isWebPage) setRoute("mainPage");
+    if (!isWebView) setRoute("mainPage");
     setUrl(tabUrl);
     setRoute("webpage");
   }

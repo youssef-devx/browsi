@@ -1,15 +1,16 @@
-import { useContext, useState, useEffect, useMemo, memo } from 'react';
-import Constants from 'expo-constants';
-import { FlatList, Platform, BackHandler, ScrollView, TouchableOpacity, View, Text, StyleSheet, useWindowDimensions } from 'react-native';
+import { useContext, useState, useEffect, useMemo, memo } from 'react'
+import Constants from 'expo-constants'
+import { FlatList, Platform, BackHandler, ScrollView, TouchableOpacity, View, Text, StyleSheet, useWindowDimensions } from 'react-native'
 import Animated, {
   useSharedValue,
   withTiming,
   useAnimatedStyle,
   Easing,
 } from 'react-native-reanimated'
-import { MainContext } from './MainContext';
-import { Feather } from '@expo/vector-icons';
-import Tab from './components/Tab';
+import { MainContext } from './MainContext'
+import { Feather } from '@expo/vector-icons'
+import Tab from './components/Tab'
+import Screen from './components/Screen'
 
 export default function Tabs() {
   const {
@@ -26,7 +27,7 @@ export default function Tabs() {
     setTabs,
     setUrl,
   } = useContext(MainContext)
-  const { width, height } = useWindowDimensions();
+  const { width, height } = useWindowDimensions()
   const slideOutAnim = useSharedValue(showScreens.tabs ? width : 0)
   const slideBackAnim = useSharedValue(showScreens.tabs ? 0 : width)
 
@@ -36,8 +37,8 @@ export default function Tabs() {
   //     toValue: width,
   //     duration: 1500,
   //     useNativeDriver: true,
-  //   }).start();
-  // };
+  //   }).start()
+  // }
 
   // function slideBack() {
   //   // Will change slideAnim value to 0 in 3 seconds
@@ -45,8 +46,8 @@ export default function Tabs() {
   //     toValue: 0,
   //     duration: 1500,
   //     useNativeDriver: true,
-  //   }).start();
-  // };
+  //   }).start()
+  // }
   const extraStyles = useMemo(() => ({
     // flex: showScreens.tabs ? 1 : 0,
     // display: showScreens.tabs ? "flex" : "none",
@@ -59,18 +60,18 @@ export default function Tabs() {
   const animStyle = useAnimatedStyle(() => {
     return {
       left: withTiming(showScreens.tabs ? slideBackAnim.value : slideOutAnim.value, { duration: 150 }),
-    };
+    }
   })
 
   // useEffect(() => {
   //   console.log(route)
   //   if (Platform.OS === 'android') {
-  //     BackHandler.addEventListener('hardwareBackPress', backToPreviousScreen);
+  //     BackHandler.addEventListener('hardwareBackPress', backToPreviousScreen)
   //     return () => {
-  //       BackHandler.removeEventListener('hardwareBackPress', backToPreviousScreen);
-  //     };
+  //       BackHandler.removeEventListener('hardwareBackPress', backToPreviousScreen)
+  //     }
   //   }
-  // }, []);
+  // }, [])
 
   function backToPreviousScreen() {
     slideOutAnim.value = width
@@ -104,10 +105,18 @@ export default function Tabs() {
     setRoute("mainPage")
     setPrevRoute("tabs")
   }
-  // console.log(showScreens)
+  
+  
+  return <Screen
+            isDark={isDark}
+            component={<Component isDark={isDark} tabs={tabs} width={width} />}
+            title={`Tabs ${tabs.length}`}
+            iconName="plus"
+            iconOnPress={addTab}
+          />
 
-  return (
-    <Animated.View style={[extraStyles, styles.container, animStyle]}>
+  /*return (
+    <View style={[extraStyles, styles.container, animStyle]}>
       <View style={styles.flexLogoAndIcon}>
         <View style={{flexDirection: "row", alignItems: "center"}}>
           <TouchableOpacity onPress={backToPreviousScreen}>
@@ -126,23 +135,26 @@ export default function Tabs() {
           onPress={addTab}
         />
       </View>
-      <View style={{display: "flex", gap: 12, justifyContent: "space-between", alignItems: "center", flexDirection: "row", flexWrap: "wrap"}}>
-        {/* {tabs.map(({ tabName, tabUrl }, idx) => (
+      <ScrollView
+        contentContainerStyle={{ width:"100%", flex: 1, flexGrow: 1, height: "100%", flexDirection: "row", flexWrap: "wrap"}}
+      >
+        {tabs.map(({ tabName, tabUrl }, idx) => (
           <Tab
             key={idx}
             isDark={isDark}
-            width
+            width={width}
+            marginRight={idx % 2 === 0 ? 12 : 0}
             tabName={tabName}
             tabUrl={tabUrl}
-            tabIdx={idx}
+            idx={idx}
             setTabs={setTabs}
             setUrl={setUrl}
             setShowScreens={setShowScreens}
             setPrevRoute={setPrevRoute}
             setRoute={setRoute}
           />
-        ))} */}
-         <FlatList
+        ))}
+         {<FlatList
           data={tabs}
           renderItem={({ item }, idx) => (
             <Tab
@@ -160,28 +172,64 @@ export default function Tabs() {
           //Setting the number of column
           numColumns={2}
           keyExtractor={(_, index) => index}
+        /> }
+      </ScrollView>
+    </View>
+  )
+  */
+}
+
+export function Component({ isDark, tabs, width }) {
+  return <ScrollView
+    contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap"}}
+  >
+    {tabs.map(({ tabName, tabUrl }, idx) => (
+      <Tab
+        key={idx}
+        isDark={isDark}
+        width={width}
+        marginRight={idx % 2 === 0 ? 12 : 0}
+        tabName={tabName}
+        tabUrl={tabUrl}
+        idx={idx}
+      />
+    ))}
+    {/* <FlatList
+      data={tabs}
+      renderItem={({ item }, idx) => (
+        <Tab
+          key={idx}
+          isDark={isDark}
+          width={width}
+          marginRight={idx % 2 === 0 ? 12 : 0}
+          tabName={item.tabName}
+          tabUrl={item.tabUrl}
+          idx={idx}
         />
-      </View>
-    </Animated.View>
-  );
+      )}
+      //Setting the number of column
+      numColumns={2}
+      keyExtractor={(_, index) => index}
+    /> */}
+  </ScrollView>
 }
 
 export function Tabo({ isDark, marginRight, tabName, tabUrl, tabIdx, setTabs, setUrl, setShowScreens, setPrevRoute, setRoute }) {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false)
 
   const showOrHideStyles = {
     bottom: show ? 56 : -100,
     right: show ? 12 : -100,
-  };
+  }
 
   function deleteTab() {
-    setTabs((currTabs) => [...currTabs.filter((_, idx) => idx !== tabIdx)]);
+    setTabs((currTabs) => [...currTabs.filter((_, idx) => idx !== tabIdx)])
   }
 
   function navigateToTab() {
-    const isWebPage = tabUrl !== "mainPage"
+    const isWebView = tabUrl !== "mainPage"
 
-    if(!isWebPage) {
+    if(!isWebView) {
       setRoute("mainPage")
       // setTabs(currTabs => {
       //   const theRoute = currTabs.find(tab => tab.tabIdx === tabIdx)
@@ -228,8 +276,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: "absolute",
-    paddingTop: Constants.statusBarHeight + 16,
-    padding: 20,
+    paddingTop: Constants.statusBarHeight + 12,
+    paddingHorizontal: 20,
   },
   flexLogoAndIcon: {
     marginBottom: 16,
@@ -261,4 +309,4 @@ const styles = StyleSheet.create({
   //   position: 'absolute',
   // },
   // menuItem: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }
-});
+})

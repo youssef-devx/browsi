@@ -9,8 +9,6 @@ export default function MainContextProvider({ children }) {
     history: false,
     bookMarks: false,
     settings: false,
-    // webPage: false,
-    // webPagesRouter: false,
   })
   const [prevRoute, setPrevRoute] = useState()
   const [prevRoutes, setPrevRoutes] = useState({
@@ -21,8 +19,6 @@ export default function MainContextProvider({ children }) {
     settings: "",
   })
   const [route, setRoute] = useState("tabs")
-  // const [routeIdx, setRouteIdx] = useState(0)
-  const [url, setUrl] = useState('https://google.com/')
   const [searchKeyWord, setSearchKeyWord] = useState('')
   const [pinnedWebsites, setPinnedWebsites] = useState([
     { siteTitle: 'Starting Page', siteUrl: 'mainPage' },
@@ -31,10 +27,11 @@ export default function MainContextProvider({ children }) {
     { siteTitle: 'Amazon | Products', siteUrl: 'https://amazon.com/' },
   ]);
   const [tabs, setTabs] = useState([
-    { tabName: 'Starting Page', tabUrl: 'mainPage' },
     { tabName: 'Google Search', tabUrl: 'https://google.com/' },
     { tabName: 'Youtube | Videos', tabUrl: 'https://youtube.com/' },
     { tabName: 'Amazon | Products', tabUrl: 'https://amazon.com/' },
+    { tabName: 'First | Products', tabUrl: 'https://amazon.com/' },
+    { tabName: 'Second | Products', tabUrl: 'https://amazon.com/' },
   ]);
   const [history, setHistory] = useState([
     { pageTitle: 'Starting Page', pageUrl: 'mainPage' },
@@ -70,8 +67,6 @@ export default function MainContextProvider({ children }) {
     setRoute,
     searchKeyWord,
     setSearchKeyWord,
-    url,
-    setUrl,
     webViewProps,
     setWebViewProps,
     tabs,
@@ -90,13 +85,13 @@ export default function MainContextProvider({ children }) {
   // console.log('Current route', route, showScreens[route])
   console.log(Object.keys(prevRoutes).map(x => [x, showScreens[x]]))
   console.log('Previous routes', route, prevRoutes)*/
-  console.log("##########################")
+  // console.log("##########################")
   // console.log("Going from:", prevRoutes[route])
   // console.log("Arriving at:", route)
-  console.log(showScreens)
-  console.log(prevRoutes)
-  console.log(route)
-  console.log("##########################")
+  // console.log(showScreens)
+  // console.log(prevRoutes)
+  // console.log(route)
+  // console.log("##########################")
 
   return <MainContext.Provider value={MainContextStates}>{children}</MainContext.Provider>
 }

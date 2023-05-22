@@ -103,14 +103,14 @@ export default function BottomPanel({ onAndroidBackPress }) {
       <TouchableOpacity style={styles.panelItem}>
         <Feather
           style={[{borderColor: isDark ? "#ffffff" : "#0b0b0c"}, styles.themeIcon]}
-          name="chevron-left" size={24} color={isDark ? `${canGoBack ? "#ffffff" : "#ffffff50"}` : `${canGoBack ? "#0b0b0c" : "#0b0b0c05"}`}
+          name="chevron-left" size={24} color={isDark ? `${canGoBack ? "#ffffff" : "#ffffff25"}` : `${canGoBack ? "#0b0b0c" : "#0b0b0c05"}`}
           onPress={onAndroidBackPress}
         />
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelItem}>
         <Feather
           style={[{borderColor: isDark ? "#ffffff" : "#0b0b0c"}, styles.themeIcon]}
-          name="chevron-right" size={24} color={isDark ? `${canGoForward ? "#ffffff" : "#ffffff50"}` : `${canGoForward ? "#0b0b0c" : "#0b0b0c05"}`}
+          name="chevron-right" size={24} color={isDark ? `${canGoForward ? "#ffffff" : "#ffffff25"}` : `${canGoForward ? "#0b0b0c" : "#0b0b0c05"}`}
         />
       </TouchableOpacity>
       <TouchableOpacity onPress={navigateToTabs} style={[
@@ -137,13 +137,13 @@ export default function BottomPanel({ onAndroidBackPress }) {
             onPress={() => setShow(currShow => !currShow)}
           />
         </TouchableOpacity>
-        <BottomSheet
+        {/* <BottomSheet
           isDark={isDark}
           sheetArr={sheetArr}
           setSheetArr={setSheetArr}
           show={show}
           setShow={setShow}
-        />
+        /> */}
         {/* <View style={[showOrHideStyles, {backgroundColor: isDark ? "#171717" : '#f7f7f7'}, styles.menu]}>
           <TouchableOpacity style={styles.menuItem} onPress={() => navigateToScreen("history")}>
             <Feather

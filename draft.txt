@@ -119,15 +119,15 @@ Default screen: the first mainScreen.
 
 Other screens: all hidden.
 
-MainScreens screen can navigate to pinnedWebsites, tabs, history, bookMarks, settings.
+MainScreens screen can navigate to pinnedWebsites(new webView), tabs, history, bookMarks, settings.
 
-Tabs screen can navigate to mainScreens, webViews.
+Tabs screen can navigate to mainScreens, webViews(new webView).
 
 WebViews screen can navigate to tabs(last screen), mainScreen(origin screen), history, bookMarks, settings.
 
-History screen can navigate to webViews, last screen.
+History screen can navigate to webViews(new webView), last screen.
 
-BookMarks screen can navigate to webViews, last screen.
+BookMarks screen can navigate to webViews(new webView), last screen.
 
 Settings screen can navigate to last screen.
 
@@ -138,8 +138,8 @@ Settings and gettings screens:
   4 - When native back button is clicked on a screen except mainScreen return to previous screen.
 
 What I need to do:
-  0 - [ CREATE A DUMPED_CODE FILE AND MOVE UNUSED CODE TO IT ]
-  1 - Render all mainScreens.
+  0 - [ CREATE A DUMPED_CODE FILE AND MOVE UNUSED CODE TO IT ] [DONE]
+  1 - Render mainScreen.
   2 - Hide all other screens.
   3 - When a pinnedWebsite is clicked create a new webView in tabs and keep the mainScreen.
   4 - When tabs button clicked navigate to tabs.
@@ -149,4 +149,28 @@ What I need to do:
   8 - When back button reach end navigate to preceeding webView in tabs.
   9 - Finish each screen completely then move to others.
   10 - When on webViews add ability to pin webSites(if reaches more then 6 add it to bookMarks).
+  11 - Create animations of navigatingc.
+  12 - When in webView and want to go back to tabs shrink the webView.
+  13 - When in tabs and want to go back, go back to mainScreen.
+  14 - [CREATE generic functions like navigateTo(<screen-name>) goBack(<screen-name>)]
 
+DATA_STRUCTER:
+  - Screens:
+    MAIN_SCREEN: "mainScreen",
+    TABS_SCREEN: "tabs",
+    HISTORY_SCREEN: "history",
+    BOOKMARKS_SCREEN: "bookMarks",
+    SETTINGS_SCREEN: "settings",
+
+  - screen, setScreen(<initial-screen>).
+  - prevScreen, setPrevScreen(null).
+  - 
+
+  - Tabs: [
+    {
+      title: String,
+      url: String,
+      favicon: String | Icon
+    },
+    ...
+  ]

@@ -6,9 +6,9 @@ import MainPage from './MainPage';
 import History from './History';
 import BookMarks from './BookMarks';
 import { StatusBar } from 'expo-status-bar';
-// import WebPage from './WebPage';
 import Settings from './Settings';
-// import WebPagesRouter from "./WebPagesRouter";
+import WebViewScreen from "./WebViewScreen";
+// import WebViewsRouter from "./WebViewsRouter";
 
 export default function App() {
   console.log('App launched')
@@ -20,6 +20,8 @@ export default function App() {
 export function AppContainer() {
   const {
     isDark,
+    tabs,
+    webViewIdx,
     showScreens,
     setShowScreens,
     prevRoute,
@@ -35,7 +37,7 @@ export function AppContainer() {
     // "settings": <Settings />,
     "tabs": <Tabs />
     ,
-    "webPage": <WebPage />,
+    "webPage": <WebView />,
     // "history": (
     //   <History
     //     isDark={isDark}
@@ -63,8 +65,10 @@ export function AppContainer() {
     {/* <Settings />
     <History />
     <BookMarks /> */}
-    <Tabs />
-    {/* <MainPage /> */}
-    {/* <WebPagesRouter /> */}
+    {/* <Tabs /> */}
+    {/* {tabs.map(({ tabName, tabUrl }, idx) => (
+      <></>
+    ))} */}
+    <WebViewScreen />
   </>
 }
