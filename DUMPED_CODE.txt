@@ -1,0 +1,99 @@
+export function Tabo({ isDark, marginRight, tabName, tabUrl, tabIdx, setTabs, setUrl, setShowScreens, setPrevRoute, setRoute }) {
+  const [show, setShow] = useState(false)
+
+  const showOrHideStyles = {
+    bottom: show ? 56 : -100,
+    right: show ? 12 : -100,
+  }
+
+  function deleteTab() {
+    setTabs((currTabs) => [...currTabs.filter((_, idx) => idx !== tabIdx)])
+  }
+
+  function navigateToTab() {
+    const isWebView = tabUrl !== "mainPage"
+
+    if(!isWebView) {
+      setRoute("mainPage")
+      // setTabs(currTabs => {
+      //   const theRoute = currTabs.find(tab => tab.tabIdx === tabIdx)
+      //   return [...currTabs.filter(tab => tab.tabIdx !== tabIdx), theRoute]
+      // })
+      // ///////////////
+      setShowScreens(currValue => ({...currValue, mainPage: true, tabs: false}))
+      setPrevRoute("tabs")
+    } else {
+      setUrl(tabUrl)
+      // /////////////
+      setShowScreens(currValue => ({...currValue, webPagesRouter: true, tabs: false}))
+      setRoute("webPagesRouter")
+      setPrevRoute("tabs")
+    }
+  }
+  
+  return <TouchableOpacity
+      style={[{ backgroundColor: isDark ? '#171717' : '#f7f7f7', marginRight }, styles.tab]}
+      onPress={navigateToTab}
+    >
+    {/* <View style={styles.more} onPress={() => setShow(currShow => !currShow)}>
+      <View style={styles.panelItem}>
+        <Feather name="more-vertical" size={24} color={isDark ? "grey" : "#0b0b0c"} />
+      </View>
+      <View style={[showOrHideStyles, styles.menu]}>
+        <View style={styles.menuItem} onPress={deleteTab}>
+          <Feather name="trash" size={24} color={isDark ? "#ffffff" : "#0b0b0c"} />
+          <Text style={styles.listItem}>Trash</Text>
+        </View>
+        <View style={styles.menuItem}>
+          <Feather name="copy" size={24} color={isDark ? "#ffffff" : "#0b0b0c"} />
+          <Text style={styles.listItem}>Copy Link</Text>
+        </View>
+      </View>
+    </View> */}
+    <Text style={[{ color: isDark ? 'grey' : '#0b0b0c' }, styles.tabName]}>
+      {tabName}
+    </Text>
+  </TouchableOpacity>
+}
+#############################################
+
+/* <FlatList
+      data={tabs}
+      renderItem={({ item }, idx) => (
+        <Tab
+          key={idx}
+          isDark={isDark}
+          width={width}
+          marginRight={idx % 2 === 0 ? 12 : 0}
+          tabName={item.tabName}
+          tabUrl={item.tabUrl}
+          idx={idx}
+        />
+      )}
+      //Setting the number of column
+      numColumns={2}
+      keyExtractor={(_, index) => index}
+    /> */
+
+############################
+
+  // useEffect(() => {
+  //   console.log(route)
+  //   if (Platform.OS === 'android') {
+  //     BackHandler.addEventListener('hardwareBackPress', backToPreviousScreen)
+  //     return () => {
+  //       BackHandler.removeEventListener('hardwareBackPress', backToPreviousScreen)
+  //     }
+  //   }
+  // }, [])
+
+#################################
+function showTabs() {
+    setShowScreens(currValue => ({...currValue, [route]: false, tabs: true}))
+    setPrevRoutes(currVlaue => ({
+      ...currVlaue,
+      [route]: "tabs",
+      tabs: route
+    }))
+    setRoute("tabs")
+  }

@@ -5,13 +5,19 @@ import SearchBar from "./SearchBar"
 import BottomPanel from "./components/BottomPanel"
 import WebView from "react-native-webview"
 import { MainContext } from "./MainContext";
+import Animated, {
+  useSharedValue,
+  withTiming,
+  useAnimatedStyle,
+  Easing,
+} from "react-native-reanimated";
 
-export default memo(function WebViewScreen() {
+export default memo(function WebViewScreen({ idx }) {
   const {
     isDark,
     tabs,
   } = useContext(MainContext)
-  const [url, setUrl] = useState('https://wiki.com/')
+  const [url, setUrl] = useState(tabs[idx].tabUrl)
   const [title, setTitle] = useState("")
   const [message, setMessage] = useState("")
   const [canGoBack, setCanGoBack] = useState(false)
@@ -24,11 +30,35 @@ export default memo(function WebViewScreen() {
     loaded: false
   })
   const {width, height} = useWindowDimensions()
+  const TAB_WIDTH = (width - 40 - 12) / 2
+  // const TOP = tabProps.visible ? parseInt(height / 2) : 0
+  // const LEFT = tabProps.visible ? parseInt(width / 2) : 0
+  const DEFAULT_TOP = 100 * idx
+  const DEFAULT_LEFT = idx % 2 === 0 ? 20 : 20 + TAB_WIDTH + 12
+  // const DEFAULT_LEFT = 100 * idx
+  const oAnim = useSharedValue(0)
+  const xAnim = useSharedValue(DEFAULT_LEFT)
+  const yAnim = useSharedValue(DEFAULT_TOP)
+  const wAnim = useSharedValue(TAB_WIDTH)
+  const hAnim = useSharedValue(128)
+  const brAnim = useSharedValue(12)
   const webViewRef = useRef(null);
+  const vRef = useRef(null);
   const jsCode = `
   window.ReactNativeWebView.postMessage(window.document.querySelector('head link[rel="shortcut icon"]').href)
   true; // note: this is required, or you'll sometimes get silent failures
 `;
+
+  const animStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(oAnim.value, { duration: 150 }),
+      top: withTiming(yAnim.value, { duration: 150 }),
+      left: withTiming(xAnim.value, { duration: 150 }),
+      width: withTiming(wAnim.value, { duration: 150 }),
+      height: withTiming(hAnim.value, { duration: 150 }),
+      borderRadius: withTiming(brAnim.value, { duration: 150 }),
+    }
+  })
 
   const onAndroidBackPress = () => {
     if (webViewRef.current) {
@@ -37,6 +67,13 @@ export default memo(function WebViewScreen() {
     }
     return false;
   };
+
+  oAnim.value = tabs[idx].visible ? 1 : 0
+  xAnim.value = tabs[idx].visible ? 0 : DEFAULT_LEFT
+  yAnim.value = tabs[idx].visible ? 0 : DEFAULT_TOP
+  wAnim.value = tabs[idx].visible ? width : TAB_WIDTH
+  hAnim.value = tabs[idx].visible ? height : 128
+  brAnim.value = tabs[idx].visible ? 0 : 12
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -80,28 +117,39 @@ export default memo(function WebViewScreen() {
     setMessage(e.nativeEvent.data)
     console.log(e.nativeEvent.data, 'this one')
   }
-
-  return <View style={[{ width, height, backgroundColor: isDark ? "#171717" : "white"}]}>
+  // top: TOP, left: LEFT,transform: [{translateX: animate ? -50 : 0},{translateY: animate ? -50 : 0}],width: 100, height: 100,
+console.log(tabs[idx].visible, idx)
+// console.log(tabs.find((x,i)=>`${x.visible}, ${i}`))
+// console.log(tabs.map(x=>x.visible))
+  return <Animated.View
+  pointerEvents={tabs[idx].visible ? "auto" : "none"}
+      style={[{ 
+        pointerEvents: tabs[idx].visible ? "auto" : "none",
+        zIndex: tabs[idx].visible ? 10 : -1,
+       position: "absolute", overflow: "hidden", backgroundColor: isDark ? "#171717" : "white"}, animStyle]}
+    >
+      <View ref={vRef}/>
     <SearchBar isDark={isDark} title={title} url={url} setUrl={setUrl} webViewRef={webViewRef} webViewProps={webViewProps} setWebViewProps={setWebViewProps} message={message}/>
     <WebView
       source={{ uri: url }}
       style={{
         // flex: showScreens.webPage ? 1 : 0,
         // display: showScreens.webPage ? "flex" : "none",
+        pointerEvents: tabs[idx].visible ? "auto" : "none",
+        zIndex: tabs[idx].visible ? 10 : -1,
         flex: 1,
         marginTop: Constants.statusBarHeight,
-        // backgroundColor: "red",
       }}
       ref={webViewRef}
       onNavigationStateChange={onWebViewNavigationStateChange}
       onLoadEnd={(navState) => onLoadEnd(navState)}
       onLoadStart={(navState) => onLoadStart(navState)}
       injectedJavaScript={jsCode}
-      onMessage={e => {console.log(e, 'ee');onMessage(e)}}
+      // onMessage={e => {console.log(e, 'ee');onMessage(e)}}
       // onLoadEnd={(syntheticEvent) => setWebViewProps(currValue => ({...currValue, loaded: true}))}
     />
-    <BottomPanel isDark={isDark} canGoBack={webViewProps.canGoBack} canGoForward={webViewProps.canGoForward} onAndroidBackPress={onAndroidBackPress}/>
-  </View>
+    <BottomPanel isDark={isDark} webViewProps={webViewProps} onAndroidBackPress={onAndroidBackPress}/>
+  </Animated.View>
 })
 
 const styles = StyleSheet.create({

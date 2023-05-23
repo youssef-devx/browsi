@@ -36,9 +36,8 @@ export default function Screen({ isDark, component, title, iconName, iconOnPress
     // flex: showScreens.tabs ? 1 : 0,
     // display: showScreens.tabs ? "flex" : "none",
     backgroundColor: isDark ? '#0b0b0c' : '#ffffff',
+    width,height
     // zIndex: showScreens.tabs ? 10 : -1,
-    width,
-    height,
   }), [])
 
   const animStyle = useAnimatedStyle(() => {

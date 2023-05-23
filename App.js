@@ -1,6 +1,6 @@
-import { BackHandler, Platform } from "react-native"
+import { BackHandler, Platform, TouchableOpacity, View } from "react-native"
 import MainContextProvider, { MainContext } from './MainContext';
-import { useContext, useEffect, useCallback } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Tabs from './Tabs';
 import MainPage from './MainPage';
 import History from './History';
@@ -29,8 +29,13 @@ export function AppContainer() {
     prevRoutes,
     setPrevRoutes,
     route,
-    setRoute
+    setRoute,
   } = useContext(MainContext)
+  const [tabProps, setTabProps] = useState({visible: false});
+
+  function scaleUp() {
+    setTabProps({visible: !tabProps.visible})
+  }
 
   /*const routes = {
     "mainPage": <MainPage />,
@@ -62,13 +67,15 @@ export function AppContainer() {
 
   return <>
     <StatusBar style={isDark ? "light" : "dark"}/>
+    {/* <TouchableOpacity
+      style={{padding: 50, backgroundColor: "green", borderRadius: 12}}
+      onPress={scaleUp} ><View/></TouchableOpacity> */}
     {/* <Settings />
     <History />
     <BookMarks /> */}
-    {/* <Tabs /> */}
-    {/* {tabs.map(({ tabName, tabUrl }, idx) => (
-      <></>
-    ))} */}
-    <WebViewScreen />
+    <Tabs />
+    {tabs.map((tab, idx) => <WebViewScreen key={idx} idx={idx} />)}
+    {/* <WebViewScreen tabProps={tabProps} /> */}
   </>
 }
+// exp://hdap06u.youssef-devx.19000.exp.direct:80

@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function BottomPanel({ onAndroidBackPress }) {
+export default function BottomPanel({ webViewProps, onAndroidBackPress }) {
   const {
     isDark,
     setPrevRoute,
@@ -56,12 +56,14 @@ export default function BottomPanel({ onAndroidBackPress }) {
     route,
     setRoute,
     tabs,
+    setTabs,
     setShowScreens,
-    webViewProps
   } = useContext(MainContext)
   const { canGoBack, canGoForward } = webViewProps
   const [show, setShow] = useState(false);
   const iconColor = isDark ? "grey" : "#0b0b0c"
+  const forwardIconColor =  isDark ? `#ffffff${canGoForward ? "" : "50"}` : `#0b0b0c${!canGoForward ? "" : "05"}`
+  const backIconColor = isDark ? `#ffffff${canGoBack ? "" : "50"}` : `#0b0b0c${!canGoBack ? "" : "05"}`
   const [sheetArr, setSheetArr] = useState([
     { label: "History", icon: <Feather name="clock" size={24} color={iconColor}/> },
     { label: "BookMarks", icon: <Feather name="bookmark" size={24} color={iconColor}/> },
@@ -74,14 +76,10 @@ export default function BottomPanel({ onAndroidBackPress }) {
     right: show ? 0 : -100,
   }), [show])
 
-  function navigateToTabs() {
-    setShowScreens(currValue => ({...currValue, [route]: false, tabs: true}))
-    setPrevRoutes(currVlaue => ({
-      ...currVlaue,
-      [route]: "tabs",
-      tabs: route
-    }))
-    setRoute("tabs")
+  function showTabs() {
+    setTabs((currTabs) => [...currTabs.map(currTab => currTab.visible === true ? {
+      ...currTab, visible: false
+    } : currTab )])
   }
 
   function navigateToScreen(screenRoute) {
@@ -103,17 +101,18 @@ export default function BottomPanel({ onAndroidBackPress }) {
       <TouchableOpacity style={styles.panelItem}>
         <Feather
           style={[{borderColor: isDark ? "#ffffff" : "#0b0b0c"}, styles.themeIcon]}
-          name="chevron-left" size={24} color={isDark ? `${canGoBack ? "#ffffff" : "#ffffff25"}` : `${canGoBack ? "#0b0b0c" : "#0b0b0c05"}`}
+          name="chevron-left" size={24} color={backIconColor}
           onPress={onAndroidBackPress}
         />
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelItem}>
         <Feather
           style={[{borderColor: isDark ? "#ffffff" : "#0b0b0c"}, styles.themeIcon]}
-          name="chevron-right" size={24} color={isDark ? `${canGoForward ? "#ffffff" : "#ffffff25"}` : `${canGoForward ? "#0b0b0c" : "#0b0b0c05"}`}
+          name="chevron-right" size={24} color={forwardIconColor}
+          onPress={onAndroidBackPress}
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={navigateToTabs} style={[
+      <TouchableOpacity onPress={showTabs} style={[
         {
           paddingHorizontal: 16,
           borderWidth: 2,

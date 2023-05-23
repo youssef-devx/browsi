@@ -27,23 +27,23 @@ export default function MainContextProvider({ children }) {
     { siteTitle: 'Amazon | Products', siteUrl: 'https://amazon.com/' },
   ]);
   const [tabs, setTabs] = useState([
-    { tabName: 'Google Search', tabUrl: 'https://google.com/' },
-    { tabName: 'Youtube | Videos', tabUrl: 'https://youtube.com/' },
-    { tabName: 'Amazon | Products', tabUrl: 'https://amazon.com/' },
-    { tabName: 'First | Products', tabUrl: 'https://amazon.com/' },
-    { tabName: 'Second | Products', tabUrl: 'https://amazon.com/' },
+    { tabName: 'Google Search', tabUrl: 'https://alsdkfj.com/', visible: false },
+    { tabName: 'Youtube | Videos', tabUrl: 'https://laskdf.co/', visible: false },
+    { tabName: 'Amazon | Products', tabUrl: 'https://dsfa.com/', visible: false },
+    { tabName: 'First | Products', tabUrl: 'https://asdfas.com/', visible: false },
+    { tabName: 'Second | Products', tabUrl: 'https://sadklf.com/', visible: false },
   ]);
   const [history, setHistory] = useState([
     { pageTitle: 'Starting Page', pageUrl: 'mainPage' },
-    { pageTitle: 'Google Search', pageUrl: 'https://google.com/' },
-    { pageTitle: 'Youtube | Videos', pageUrl: 'https://youtube.com/' },
-    { pageTitle: 'Amazon | Products', pageUrl: 'https://amazon.com/' },
+    { pageTitle: 'Google Search', pageUrl: 'https://wiki.com/' },
+    { pageTitle: 'Youtube | Videos', pageUrl: 'https://wiki.com/' },
+    { pageTitle: 'Amazon | Products', pageUrl: 'https://wiki.com/' },
   ])
   const [bookMarks, setBookMarks] = useState([
     { pageTitle: 'Starting Page', pageUrl: 'mainPage' },
-    { pageTitle: 'Google Search', pageUrl: 'https://google.co/' },
-    { pageTitle: 'Youtube | Videos', pageUrl: 'https://youtube.com/' },
-    { pageTitle: 'Amazon | Products', pageUrl: 'https://amazon.com/' },
+    { pageTitle: 'Google Search', pageUrl: 'https://wiki.com/' },
+    { pageTitle: 'Youtube | Videos', pageUrl: 'https://wiki.com/' },
+    { pageTitle: 'Amazon | Products', pageUrl: 'https://wiki.com/' },
   ])
   const [settings, setSettings] = useState([
     { setting: 'Dark Theme', component: "checkbox", value: true },
