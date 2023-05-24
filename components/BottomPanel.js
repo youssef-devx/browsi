@@ -50,14 +50,13 @@ const styles = StyleSheet.create({
 export default function BottomPanel({ webViewProps, onAndroidBackPress }) {
   const {
     isDark,
-    setPrevRoute,
-    prevRoutes,
-    setPrevRoutes,
-    route,
-    setRoute,
+    tabsVisible,
+    setTabsVisible,
+    setHistoryVisible,
+    setBookMarksVisible,
+    setSettingsVisible,
     tabs,
     setTabs,
-    setShowScreens,
   } = useContext(MainContext)
   const { canGoBack, canGoForward } = webViewProps
   const [show, setShow] = useState(false);
@@ -77,19 +76,16 @@ export default function BottomPanel({ webViewProps, onAndroidBackPress }) {
   }), [show])
 
   function showTabs() {
+    console.log(tabsVisible)
+    tabsVisible ? setTabs((currTabs) => [...currTabs.map(currTab => currTab.visible === true ? {
+      ...currTab, visible: false
+    } : currTab )]) : setTabsVisible(currVal => !currVal)
+  }
+
+  function hideWebViews() {
     setTabs((currTabs) => [...currTabs.map(currTab => currTab.visible === true ? {
       ...currTab, visible: false
     } : currTab )])
-  }
-
-  function navigateToScreen(screenRoute) {
-    setShowScreens(currValue => ({...currValue, [route]: false, [screenRoute]: true}))
-    setPrevRoutes(currVlaue => ({
-      ...currVlaue,
-      [route]: screenRoute,
-      [screenRoute]: route
-    }))
-    setRoute(screenRoute)
   }
 
   return (
@@ -143,8 +139,8 @@ export default function BottomPanel({ webViewProps, onAndroidBackPress }) {
           show={show}
           setShow={setShow}
         /> */}
-        {/* <View style={[showOrHideStyles, {backgroundColor: isDark ? "#171717" : '#f7f7f7'}, styles.menu]}>
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigateToScreen("history")}>
+        <View style={[showOrHideStyles, {backgroundColor: isDark ? "#171717" : '#f7f7f7'}, styles.menu]}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {setHistoryVisible(currVal => !currVal);hideWebViews()}}>
             <Feather
               style={[{borderColor: isDark ? "#ffffff" : "#0b0b0c"}, styles.themeIcon]}
               name="clock" size={20} color={isDark ? "#ffffff" : "#0b0b0c"}
@@ -157,7 +153,7 @@ export default function BottomPanel({ webViewProps, onAndroidBackPress }) {
               History
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigateToScreen("bookMarks")}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {setBookMarksVisible(currVal => !currVal);hideWebViews()}}>
             <Feather
               style={[{borderColor: isDark ? "#ffffff" : "#0b0b0c"}, styles.themeIcon]}
               name="book" size={20} color={isDark ? "#ffffff" : "#0b0b0c"}
@@ -170,7 +166,7 @@ export default function BottomPanel({ webViewProps, onAndroidBackPress }) {
               BookMarks
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigateToScreen("settings")}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {setSettingsVisible(currVal => !currVal);hideWebViews()}}>
             <Feather
               style={[{borderColor: isDark ? "#ffffff" : "#0b0b0c"}, styles.themeIcon]}
               name="settings" size={20} color={isDark ? "#ffffff" : "#0b0b0c"}
@@ -183,7 +179,7 @@ export default function BottomPanel({ webViewProps, onAndroidBackPress }) {
               Settings
             </Text>
           </TouchableOpacity>
-        </View> */}
+        </View>
       </View>
     </View>
   );

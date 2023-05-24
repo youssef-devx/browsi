@@ -1,11 +1,5 @@
-import { useRef, useContext, useState, useEffect, useMemo } from 'react';
+import { useRef, useContext, useState, useEffect, useMemo } from 'react'
 import { Platform, BackHandler, Text, TextInput, TouchableOpacity, View, StyleSheet, useWindowDimensions } from 'react-native'
-import Animated, {
-  useSharedValue,
-  withTiming,
-  useAnimatedStyle,
-  Easing,
-} from 'react-native-reanimated'
 import Constants from 'expo-constants'
 import PinnedSites from './components/PinnedSites'
 import BottomPanel from './components/BottomPanel'
@@ -13,7 +7,7 @@ import { Feather } from '@expo/vector-icons'
 import { MainContext } from "./MainContext"
 
 
-export default function MainPage() {
+export default function MainScreen() {
   const {
     isDark,
     showScreens,
@@ -25,61 +19,29 @@ export default function MainPage() {
     tabs,
     setTabs
   } = useContext(MainContext)
-  const { width, height } = useWindowDimensions();
-  const slideOutAnim = useSharedValue(0)
-  const slideBackAnim = useSharedValue(width)
+  const { width, height } = useWindowDimensions()
 
-  // function slideIn() {
-  //   // Will change slideAnim value to 1 in 5 seconds
-  //   Animated.timing(slideInAnim, {
-  //     toValue: width,
-  //     duration: 1500,
-  //     useNativeDriver: true,
-  //   }).start();
-  // };
-
-  // function slideBack() {
-  //   // Will change slideAnim value to 0 in 3 seconds
-  //   Animated.timing(slideBackAnim, {
-  //     toValue: 0,
-  //     duration: 1500,
-  //     useNativeDriver: true,
-  //   }).start();
-  // };
   const extraStyles = useMemo(() => ({
-    // flex: showScreens.mainPage ? 1 : 0,
-    // display: showScreens.mainPage ? "flex" : "none",
     backgroundColor: isDark ? '#0b0b0c' : '#ffffff',
-    zIndex: showScreens.mainPage ? 10 : -10,
     width,
     height,
-  }), [showScreens])
-
-  const animStyle = useAnimatedStyle(() => {
-    return {
-      left: withTiming(showScreens.tabs ? slideBackAnim.value : slideOutAnim.value, { duration: 150 }),
-    };
-  })
+  }), [isDark])
 
   useEffect(() => {
     if (Platform.OS === 'android') {
       BackHandler.addEventListener('hardwareBackPress', () => {
-        slideOutAnim.value = width
-        slideBackAnim.value = 0
         return true
-      });
+      })
       return () => {
         BackHandler.removeEventListener('hardwareBackPress', () => {
-          slideOutAnim.value = width
-          slideBackAnim.value = 0
           return true
-        });
-      };
+        })
+      }
     }
-  }, []);
+  }, [])
 
   return (
-    <Animated.View style={[extraStyles, styles.container, animStyle]}>
+    <View style={[extraStyles, styles.container]}>
       <Text style={[{color: isDark ? "#ffffff" : "#0b0b0c"}, styles.logo]}>Browsi</Text>
       {/* <PinnedSites isDark={isDark}/> */}
       <View style={styles.searchContainer}>
@@ -95,8 +57,8 @@ export default function MainPage() {
           placeholderTextColor={isDark ? "grey" : "#ffffff"}
         />
       </View>
-      <BottomPanel isDark={isDark} setRoute={setRoute} tabs={tabs} setTabs={setTabs}/>
-    </Animated.View>
+      <BottomPanel isDark={isDark} webViewProps={{}} onAndroidBackPress={() => console.log('From main screen')}/>
+    </View>
   )
 }
 
@@ -146,7 +108,7 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     position: "absolute",
-    zIndex: 1,
+    elevation: 1,
     left: 12,
   }
 })

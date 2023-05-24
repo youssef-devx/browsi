@@ -49,7 +49,6 @@ export default memo(function Tab({ marginRight, tabName, idx }) {
   }
 
   return <TouchableOpacity
-      ref={tabRef}
       style={[{
         backgroundColor: isDark ? '#171717' : '#f7f7f7',
         width: TAB_WIDTH, height: TAB_WIDTH, marginRight }, styles.tab]}

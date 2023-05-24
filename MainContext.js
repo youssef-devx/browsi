@@ -3,23 +3,12 @@ export const MainContext = createContext({});
 
 export default function MainContextProvider({ children }) {
   const [isDark, setIsDark] = useState(true)
-  const [showScreens, setShowScreens] = useState({
-    mainPage: false,
-    tabs: true,
-    history: false,
-    bookMarks: false,
-    settings: false,
-  })
-  const [prevRoute, setPrevRoute] = useState()
-  const [prevRoutes, setPrevRoutes] = useState({
-    mainPage: "",
-    tabs: "",
-    history: "",
-    bookMarks: "",
-    settings: "",
-  })
+  const [tabsVisible, setTabsVisible] = useState(false)
+  const [historyVisible, setHistoryVisible] = useState(false)
+  const [bookMarksVisible, setBookMarksVisible] = useState(false)
+  const [settingsVisible, setSettingsVisible] = useState(false)
   const [route, setRoute] = useState("tabs")
-  const [searchKeyWord, setSearchKeyWord] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
   const [pinnedWebsites, setPinnedWebsites] = useState([
     { siteTitle: 'Starting Page', siteUrl: 'mainPage' },
     { siteTitle: 'Google Search', siteUrl: 'https://google.com/' },
@@ -31,16 +20,15 @@ export default function MainContextProvider({ children }) {
     { tabName: 'Youtube | Videos', tabUrl: 'https://laskdf.co/', visible: false },
     { tabName: 'Amazon | Products', tabUrl: 'https://dsfa.com/', visible: false },
     { tabName: 'First | Products', tabUrl: 'https://asdfas.com/', visible: false },
-    { tabName: 'Second | Products', tabUrl: 'https://sadklf.com/', visible: false },
   ]);
   const [history, setHistory] = useState([
-    { pageTitle: 'Starting Page', pageUrl: 'mainPage' },
+    { pageTitle: 'Starting Page', pageUrl: 'https://wiki.com/' },
     { pageTitle: 'Google Search', pageUrl: 'https://wiki.com/' },
     { pageTitle: 'Youtube | Videos', pageUrl: 'https://wiki.com/' },
     { pageTitle: 'Amazon | Products', pageUrl: 'https://wiki.com/' },
   ])
   const [bookMarks, setBookMarks] = useState([
-    { pageTitle: 'Starting Page', pageUrl: 'mainPage' },
+    { pageTitle: 'Starting Page', pageUrl: 'https://wiki.com/' },
     { pageTitle: 'Google Search', pageUrl: 'https://wiki.com/' },
     { pageTitle: 'Youtube | Videos', pageUrl: 'https://wiki.com/' },
     { pageTitle: 'Amazon | Products', pageUrl: 'https://wiki.com/' },
@@ -49,26 +37,22 @@ export default function MainContextProvider({ children }) {
     { setting: 'Dark Theme', component: "checkbox", value: true },
     { setting: 'Short Bottom Panel', component: "checkbox", value: false },
   ])
-  const [webViewProps, setWebViewProps] = useState({
-    canGoBack: false,
-    canGoForward: false,
-  })
 
   const MainContextStates = {
     isDark,
     setIsDark,
-    showScreens,
-    setShowScreens,
-    prevRoute,
-    setPrevRoute,
-    prevRoutes,
-    setPrevRoutes,
+    tabsVisible,
+    setTabsVisible,
+    historyVisible,
+    setHistoryVisible,
+    bookMarksVisible,
+    setBookMarksVisible,
+    settingsVisible,
+    setSettingsVisible,
     route,
     setRoute,
-    searchKeyWord,
-    setSearchKeyWord,
-    webViewProps,
-    setWebViewProps,
+    searchQuery,
+    setSearchQuery,
     tabs,
     setTabs,
     history,

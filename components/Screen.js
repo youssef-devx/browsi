@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { useWindowDimensions, Platform, BackHandler, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
+import { Platform, useWindowDimensions, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import Animated, {
   useSharedValue,
   withTiming,
@@ -7,24 +7,20 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated'
 import Constants from 'expo-constants'
-import { MainContext } from '../MainContext'
 import { Feather } from '@expo/vector-icons'
 
-export default function Screen({ isDark, component, title, iconName, iconOnPress }) {
+export default function Screen({
+    isDark,
+    component,
+    title,
+    iconName,
+    iconOnPress,
+    screenVisible,
+    setScreenVisible,
+  }) {
   const { width, height } = useWindowDimensions()
-  // const slideOutAnim = useSharedValue(showScreens.tabs ? width : 0)
-  // const slideBackAnim = useSharedValue(showScreens.tabs ? 0 : width)
+  const lAnim = useSharedValue(screenVisible ? 0 : width)
 
-  /* function slideOut() {
-  //   // Will change slideAnim value to 1 in 5 seconds
-  //   Animated.timing(slideInAnim, {
-  //     toValue: width,
-  //     duration: 1500,
-  //     useNativeDriver: true,
-  //   }).start()
-  // }*/
-
-  /* function slideBack() {
   //   // Will change slideAnim value to 0 in 3 seconds
   //   Animated.timing(slideBackAnim, {
   //     toValue: 0,
@@ -33,25 +29,25 @@ export default function Screen({ isDark, component, title, iconName, iconOnPress
   //   }).start()
   // }*/
   const extraStyles = useMemo(() => ({
-    // flex: showScreens.tabs ? 1 : 0,
-    // display: showScreens.tabs ? "flex" : "none",
     backgroundColor: isDark ? '#0b0b0c' : '#ffffff',
-    width,height
-    // zIndex: showScreens.tabs ? 10 : -1,
-  }), [])
+    width, height
+  }), [isDark])
 
   const animStyle = useAnimatedStyle(() => {
     return {
-      // left: withTiming(showScreens.tabs ? slideBackAnim.value : slideOutAnim.value, { duration: 150 }),
+      left: withTiming(screenVisible ? 0 : lAnim.value, { duration: 150 }),
     }
   })
 
-  function backToPreviousScreen() {}
+  function hideScreen() {
+    setScreenVisible(false)
+    lAnim.value = width
+  }
 
   return <Animated.View style={[extraStyles, styles.container, animStyle]}>
     <View style={styles.flexLogoAndIcon}>
         <View style={{flexDirection: "row", alignItems: "center"}}>
-          <TouchableOpacity onPress={backToPreviousScreen}>
+          <TouchableOpacity onPress={hideScreen}>
             <Feather
               name="arrow-left"
               size={28}
@@ -74,7 +70,7 @@ export default function Screen({ isDark, component, title, iconName, iconOnPress
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: "relative",
+    position: "absolute",
     paddingTop: Constants.statusBarHeight + 12,
     paddingHorizontal: 20,
   },

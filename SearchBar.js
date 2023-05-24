@@ -12,7 +12,7 @@ import Animated, {
 export default function SearchBar({ isDark, url, setUrl, webViewRef, webViewProps, setWebViewProps, message }) {
   // const slideUpVal = useSharedValue(webViewProps.loading ?  : 0)
   const [favicon, setFavicon] = useState("")
-  console.log(message)
+  // console.log(message)
 
   function injectJS() {
     // webViewRef.current.injectJavaScript(`window.webkit.messageHandlers.ReactNativeWebView.postMessage("hello apple pay")`)
@@ -26,7 +26,7 @@ export default function SearchBar({ isDark, url, setUrl, webViewRef, webViewProp
         size={28}
         color={isDark ? "grey" : "white"}
       />}
-      <TouchableOpacity style={{marginLeft: 12}} onPress={() => {console.log('her');setUrl("https://wiki32.com")}}>
+      <TouchableOpacity style={{marginLeft: 12}} onPress={() => {setUrl("https://wiki32.com")}}>
         <Text style={{color: isDark ? "grey" : "#0b0b0c"}}>{webViewProps.title}</Text>
       </TouchableOpacity>
     </View>

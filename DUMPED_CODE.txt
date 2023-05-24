@@ -87,6 +87,17 @@ export function Tabo({ isDark, marginRight, tabName, tabUrl, tabIdx, setTabs, se
   //   }
   // }, [])
 
+###############################3
+// useEffect(() => {
+  //   if (Platform.OS === 'android') {
+  //     BackHandler.addEventListener('hardwareBackPress', backToPreviousScreen);
+  //     return () => {
+  //       BackHandler.removeEventListener('hardwareBackPress', backToPreviousScreen);
+  //     };
+  //   }
+  // }, []);
+
+
 #################################
 function showTabs() {
     setShowScreens(currValue => ({...currValue, [route]: false, tabs: true}))
@@ -96,4 +107,51 @@ function showTabs() {
       tabs: route
     }))
     setRoute("tabs")
+  }
+
+#####################################
+/*const routes = {
+    "MainScreen": <MainScreen />,
+    // "settings": <Settings />,
+    "tabs": <Tabs />
+    ,
+    "webPage": <WebView />,
+    // "history": (
+    //   <History
+    //     isDark={isDark}
+    //     route={route}
+    //     setRoute={setRoute}
+    //     history={history}
+    //     setHistory={setHistory}
+    //     setUrl={setUrl}
+    //   />
+    // ),
+    // "bookmarks": (
+    //   <BookMarks
+    //     isDark={isDark}
+    //     route={route}
+    //     setRoute={setRoute}
+    //     bookmarks={bookmarks}
+    //     setBookMarks={setBookMarks}
+    //     setUrl={setUrl}
+    //   />
+    // )
+  };*/
+
+  ##############################
+
+  function backToPreviousScreen() {
+    setShowScreens((currValue) => ({
+      ...currValue,
+      [prevRoutes[route]]: true,
+      history: false,
+    }))
+    setPrevRoutes((currVlaue) => ({
+      ...currVlaue,
+      history: prevRoutes.history,
+      [prevRoutes.history]: "history",
+    }))
+    setRoute(prevRoutes.history)
+
+    return true
   }
