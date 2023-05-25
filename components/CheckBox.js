@@ -1,8 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity, StyleSheet } from "react-native"
-import { useState } from "react";
+import { useState, meom } from "react";
 
-export default function CheckBox({ isDark, value }) {
+export default memo(function CheckBox({ isDark, value }) {
   const [checked, setChecked] = useState(value)
 
   return <TouchableOpacity
@@ -11,7 +11,7 @@ export default function CheckBox({ isDark, value }) {
     >
     { checked && <Feather name="check" size={16} color={isDark ? "grey" : "#0b0b0c"}/>}
   </TouchableOpacity>
-}
+})
 
 const styles = StyleSheet.create({
   container: {

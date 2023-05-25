@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
 import {View, Text, Image, StyleSheet, TouchableOpacity} from "react-native"
 import Constants from 'expo-constants';
 import { Feather } from "@expo/vector-icons";
@@ -8,17 +8,31 @@ import Animated, {
   useAnimatedStyle,
   Easing,
 } from 'react-native-reanimated'
+import { MainContext } from "./MainContext";
 
-export default function SearchBar({ isDark, url, setUrl, webViewRef, webViewProps, setWebViewProps, message }) {
-  // const slideUpVal = useSharedValue(webViewProps.loading ?  : 0)
+export default function SearchBar({ isDark, url, setUrl, webViewRef, webViewProps, message }) {
+  const { showSearchBar } = useContext(MainContext)
+  const yAnim = useSharedValue(showSearchBar ? Constants.statusBarHeight + 12 : -56)
   const [favicon, setFavicon] = useState("")
   // console.log(message)
+
+  const searchBarStyle = useAnimatedStyle(() => {
+    return {
+      top: withTiming(yAnim.value, { duration: 150 }),
+    }
+  })
+
+  yAnim.value = showSearchBar ? Constants.statusBarHeight + 12 : -56
 
   function injectJS() {
     // webViewRef.current.injectJavaScript(`window.webkit.messageHandlers.ReactNativeWebView.postMessage("hello apple pay")`)
   }
 
-  return <View style={[{ backgroundColor: isDark ? '#171717' : '#fdfdfd' } , styles.searchBar]}>
+  function onReloadOrStopReload (){
+    webViewProps.loading ? webViewRef.current.stopLoading() : webViewRef.current.reload()
+  }
+
+  return <Animated.View style={[{ backgroundColor: isDark ? '#171717' : '#fdfdfd' } , styles.searchBar, searchBarStyle]}>
     <View style={{flexDirection: "row", alignItems: "center" }}>
       { message ? <Image source={{uri: message}}
        style={{width: 28, height: 28, borderRadius: 8}} /> : <Feather
@@ -27,13 +41,13 @@ export default function SearchBar({ isDark, url, setUrl, webViewRef, webViewProp
         color={isDark ? "grey" : "white"}
       />}
       <TouchableOpacity style={{marginLeft: 12}} onPress={() => {setUrl("https://wiki32.com")}}>
-        <Text style={{color: isDark ? "grey" : "#0b0b0c"}}>{webViewProps.title}</Text>
+        <Text style={{color: isDark ? "grey" : "#0b0b0c"}} numberOfLines={1}>{webViewProps.title}</Text>
       </TouchableOpacity>
     </View>
-    <TouchableOpacity style={{alignSelf: "center"}} onPress={() => webViewProps.loading ? webViewRef.current.stopLoading() : webViewRef.current.reload()}>
+    <TouchableOpacity style={{alignSelf: "center"}} onPress={onReloadOrStopReload}>
       <Feather name={webViewProps.loading ? "x" : "rotate-ccw"} size={24} color={isDark ? 'grey' : '#0b0b0c'}/>
     </TouchableOpacity>
-  </View>
+  </Animated.View>
 }
 
 const styles = StyleSheet.create({
@@ -44,7 +58,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignSelf: "center",
     justifyContent: "space-between",
-    top: Constants.statusBarHeight + 12,
     padding: 12,
     borderRadius: 12
   },

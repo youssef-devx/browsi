@@ -155,3 +155,77 @@ function showTabs() {
 
     return true
   }
+
+#######################################
+
+
+        {/* <View style={[showOrHideStyles, {backgroundColor: isDark ? "#171717" : '#f7f7f7'}, styles.menu]}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {setHistoryVisible(currVal => !currVal);hideWebViews()}}>
+            <Feather
+              style={[{borderColor: isDark ? "#ffffff" : "#0b0b0c"}, styles.themeIcon]}
+              name="clock" size={20} color={isDark ? "#ffffff" : "#0b0b0c"}
+            />
+            <Text
+              style={[
+                { width: 70, color: isDark ? '#ffffff' : '#0b0b0c' },
+                styles.listItem,
+              ]}>
+              History
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {setBookMarksVisible(currVal => !currVal);hideWebViews()}}>
+            <Feather
+              style={[{borderColor: isDark ? "#ffffff" : "#0b0b0c"}, styles.themeIcon]}
+              name="book" size={20} color={isDark ? "#ffffff" : "#0b0b0c"}
+            />
+            <Text
+              style={[
+                { width: 70, color: isDark ? '#ffffff' : '#0b0b0c' },
+                styles.listItem,
+              ]}>
+              BookMarks
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {setSettingsVisible(currVal => !currVal);hideWebViews()}}>
+            <Feather
+              style={[{borderColor: isDark ? "#ffffff" : "#0b0b0c"}, styles.themeIcon]}
+              name="settings" size={20} color={isDark ? "#ffffff" : "#0b0b0c"}
+            />
+            <Text
+              style={[
+                { width: 70, color: isDark ? '#ffffff' : '#0b0b0c' },
+                styles.listItem,
+              ]}>
+              Settings
+            </Text>
+          </TouchableOpacity>
+        </View> */}
+
+####################################3
+
+
+  /*// console.log('Previous route', prevRoute, showScreens[prevRoute])
+  // console.log('Current route', route, showScreens[route])
+  console.log(Object.keys(prevRoutes).map(x => [x, showScreens[x]]))
+  console.log('Previous routes', route, prevRoutes)*/
+  // console.log("##########################")
+  // console.log("Going from:", prevRoutes[route])
+  // console.log("Arriving at:", route)
+  // console.log(showScreens)
+  // console.log(prevRoutes)
+  // console.log(route)
+  // console.log("##########################")
+
+  ##########################################3
+
+
+    // <FlatList
+    //   style={styles.pinnedSites}
+    //   data={pinnedSites}
+    //   renderItem={({ item }) => (
+    //     <Item isDark={isDark} label={item.label} onPress={() => {}}/>
+    //   )}
+    //   //Setting the number of column
+    //   numColumns={3}
+    //   keyExtractor={(_, index) => index}
+    // />

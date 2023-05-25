@@ -1,5 +1,6 @@
-import { createContext, useState } from 'react';
-export const MainContext = createContext({});
+import { Feather } from '@expo/vector-icons'
+import { createContext, useState } from 'react'
+export const MainContext = createContext({})
 
 export default function MainContextProvider({ children }) {
   const [isDark, setIsDark] = useState(true)
@@ -7,20 +8,18 @@ export default function MainContextProvider({ children }) {
   const [historyVisible, setHistoryVisible] = useState(false)
   const [bookMarksVisible, setBookMarksVisible] = useState(false)
   const [settingsVisible, setSettingsVisible] = useState(false)
-  const [route, setRoute] = useState("tabs")
-  const [searchQuery, setSearchQuery] = useState('')
   const [pinnedWebsites, setPinnedWebsites] = useState([
     { siteTitle: 'Starting Page', siteUrl: 'mainPage' },
     { siteTitle: 'Google Search', siteUrl: 'https://google.com/' },
     { siteTitle: 'Youtube | Videos', siteUrl: 'https://youtube.com/' },
     { siteTitle: 'Amazon | Products', siteUrl: 'https://amazon.com/' },
-  ]);
+  ])
   const [tabs, setTabs] = useState([
     { tabName: 'Google Search', tabUrl: 'https://alsdkfj.com/', visible: false },
     { tabName: 'Youtube | Videos', tabUrl: 'https://laskdf.co/', visible: false },
     { tabName: 'Amazon | Products', tabUrl: 'https://dsfa.com/', visible: false },
     { tabName: 'First | Products', tabUrl: 'https://asdfas.com/', visible: false },
-  ]);
+  ])
   const [history, setHistory] = useState([
     { pageTitle: 'Starting Page', pageUrl: 'https://wiki.com/' },
     { pageTitle: 'Google Search', pageUrl: 'https://wiki.com/' },
@@ -37,6 +36,31 @@ export default function MainContextProvider({ children }) {
     { setting: 'Dark Theme', component: "checkbox", value: true },
     { setting: 'Short Bottom Panel', component: "checkbox", value: false },
   ])
+  const [showBottomSheet, setShowBottomSheet] = useState(false)
+  const [showSearchBar, setShowSearchBar] = useState(true)
+  const [sheetArr, setSheetArr] = useState([
+    { label: "Toggle SearchBar",
+      icon: <Feather name="search" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
+      onPress: () => {setShowSearchBar(currVal => !currVal);setShowBottomSheet(false)}
+    },
+    { label: "History",
+      icon: <Feather name="clock" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
+      onPress: () => {setHistoryVisible(currVal => !currVal);hideWebViews();setShowBottomSheet(false)}
+    },
+    { label: "BookMarks",
+      icon: <Feather name="bookmark" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
+      onPress: () => {setBookMarksVisible(currVal => !currVal);hideWebViews();setShowBottomSheet(false)}
+    },
+    { label: "Settings",
+      icon: <Feather name="settings" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
+      onPress: () => {setSettingsVisible(currVal => !currVal);hideWebViews();setShowBottomSheet(false)}
+    },
+  ])
+  const [searchHistory, setSearchHistory] = useState([
+    {value: "history1"},
+    {value: "history2"},
+    {value: "history3"},
+  ])
 
   const MainContextStates = {
     isDark,
@@ -49,10 +73,10 @@ export default function MainContextProvider({ children }) {
     setBookMarksVisible,
     settingsVisible,
     setSettingsVisible,
-    route,
-    setRoute,
-    searchQuery,
-    setSearchQuery,
+    showBottomSheet,
+    setShowBottomSheet,
+    sheetArr,
+    setSheetArr,
     tabs,
     setTabs,
     history,
@@ -62,20 +86,18 @@ export default function MainContextProvider({ children }) {
     settings,
     setSettings,
     pinnedWebsites,
-    setPinnedWebsites
-  };
+    setPinnedWebsites,
+    searchHistory,
+    setSearchHistory,
+    showSearchBar,
+    setShowSearchBar,
+  }
 
-  /*// console.log('Previous route', prevRoute, showScreens[prevRoute])
-  // console.log('Current route', route, showScreens[route])
-  console.log(Object.keys(prevRoutes).map(x => [x, showScreens[x]]))
-  console.log('Previous routes', route, prevRoutes)*/
-  // console.log("##########################")
-  // console.log("Going from:", prevRoutes[route])
-  // console.log("Arriving at:", route)
-  // console.log(showScreens)
-  // console.log(prevRoutes)
-  // console.log(route)
-  // console.log("##########################")
+  function hideWebViews() {
+    setTabs((currTabs) => [...currTabs.map(currTab => currTab.visible === true ? {
+      ...currTab, visible: false
+    } : currTab )])
+  }
 
   return <MainContext.Provider value={MainContextStates}>{children}</MainContext.Provider>
 }

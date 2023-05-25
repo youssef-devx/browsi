@@ -4,17 +4,9 @@ import { Feather } from '@expo/vector-icons'
 import { MainContext } from '../MainContext'
 
 export default memo(function Tab({ marginRight, tabName, idx }) {
-  const [show, setShow] = useState(false)
-  const { isDark, tabs, setTabs } = useContext(MainContext)
+  const { isDark, setTabs } = useContext(MainContext)
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions()
   const TAB_WIDTH = (SCREEN_WIDTH - 40 - 12) / 2
-  // const TAB_WIDTH = "48%"
-  // const TAB_WIDTH = (SCREEN_WIDTH / 2) - (marginRight) - 20
-
-  const showOrHideStyles = {
-    bottom: show ? 56 : -100,
-    right: show ? 12 : -100,
-  }
 
   function deleteTab() {
     // setTabs((currTabs) => [...currTabs.filter((_, tIdx) => tIdx !== idx)])
@@ -24,28 +16,6 @@ export default memo(function Tab({ marginRight, tabName, idx }) {
     setTabs((currTabs) => [...currTabs.map((currTab, tIdx) => tIdx === idx ? {
     ...currTab, visible: true
     } : currTab )])
-  }
-  
-
-  function navigateToTab() {
-    const isWebView = tabUrl !== "mainPage"
-
-    if(!isWebView) {
-      setRoute("mainPage")
-      // setTabs(currTabs => {
-      //   const theRoute = currTabs.find(tab => tab.tabIdx === tabIdx)
-      //   return [...currTabs.filter(tab => tab.tabIdx !== tabIdx), theRoute]
-      // })
-      // ///////////////
-      setShowScreens(currValue => ({...currValue, mainPage: true, tabs: false}))
-      setPrevRoute("tabs")
-    } else {
-      setUrl(tabUrl)
-      // /////////////
-      setShowScreens(currValue => ({...currValue, webPagesRouter: true, tabs: false}))
-      setRoute("webPagesRouter")
-      setPrevRoute("tabs")
-    }
   }
 
   return <TouchableOpacity
@@ -85,14 +55,5 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
     backgroundColor: "#292929"
-  },
-  more: { position: 'relative' },
-  menu: {
-    flex: 1,
-    gap: 12,
-    padding: 12,
-    borderRadius: 12,
-    position: 'absolute',
-  },
-  menuItem: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }
+  }
 })

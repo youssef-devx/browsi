@@ -2,7 +2,6 @@ import {
   Text,
   View,
   StyleSheet,
-  FlatList,
   TouchableOpacity,
 } from 'react-native';
 import { useState } from 'react';
@@ -23,10 +22,10 @@ export default function PinnedSites({isDark}) {
   const [pinnedSites, setPinnedSite] = useState([
     { label: 'Google' },
     { label: 'Youtube' },
-    // { label: 'Google' },
-    // { label: 'Youtube' },
-    // { label: 'Google' },
-    // { label: 'Youtube' }
+    { label: 'Google' },
+    { label: 'Youtube' },
+    { label: 'Google' },
+    { label: 'Youtube' }
   ]);
 
   return (
@@ -38,16 +37,6 @@ export default function PinnedSites({isDark}) {
       {pinnedSites.slice(3, 6).map((site, idx) => <Item key={idx} label={site.label} onPress={() => {}}/>)}
       </View>
     </View>
-    // <FlatList
-    //   style={styles.pinnedSites}
-    //   data={pinnedSites}
-    //   renderItem={({ item }) => (
-    //     <Item isDark={isDark} label={item.label} onPress={() => {}}/>
-    //   )}
-    //   //Setting the number of column
-    //   numColumns={3}
-    //   keyExtractor={(_, index) => index}
-    // />
   );
 }
 
@@ -60,4 +49,4 @@ export function Item({ isDark, label, onPress }) {
       <Text style={{color: isDark ? "#ffffff" : "#0b0b0c"}}>{label}</Text>
     </View>
   )
-  }
+}

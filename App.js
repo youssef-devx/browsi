@@ -1,4 +1,3 @@
-import { BackHandler, Platform } from "react-native"
 import MainContextProvider, { MainContext } from './MainContext';
 import { useContext, useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
@@ -7,7 +6,8 @@ import TabsScreen from './TabsScreen';
 import HistoryScreen from './HistoryScreen';
 import BookMarksScreen from './BookMarksScreen';
 import SettingsScreen from './SettingsScreen';
-import WebViewScreen from "./WebViewScreen";
+// import WebViewScreen from "./WebViewScreen";
+import BottomSheet from "./components/BottomSheet";
 
 export default function App() {
   console.log('App launched')
@@ -24,16 +24,13 @@ export function AppContainer() {
 
   return <>
     <StatusBar style={isDark ? "light" : "dark"}/>
-    {/* <TouchableOpacity
-      style={{padding: 50, backgroundColor: "green", borderRadius: 12}}
-      onPress={scaleUp} ><View/></TouchableOpacity> */}
     <MainScreen />
     <TabsScreen />
     <BookMarksScreen />
     <SettingsScreen />
     <HistoryScreen />
-    {tabs.map((_, idx) => <WebViewScreen key={idx} idx={idx} />)}
-    {/* <WebViewScreen tabProps={tabProps} /> */}
+    {/* {tabs.map((_, idx) => <WebViewScreen key={idx} idx={idx} />)} */}
+    <BottomSheet />
   </>
 }
 // exp://hdap06u.youssef-devx.19000.exp.direct:80

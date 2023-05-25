@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useMemo, useCallback, memo } from "react"
 import { Platform, useWindowDimensions, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import Animated, {
   useSharedValue,
@@ -9,7 +9,7 @@ import Animated, {
 import Constants from 'expo-constants'
 import { Feather } from '@expo/vector-icons'
 
-export default function Screen({
+export default memo(function Screen({
     isDark,
     component,
     title,
@@ -39,10 +39,10 @@ export default function Screen({
     }
   })
 
-  function hideScreen() {
+  const hideScreen = useCallback(() => {
     setScreenVisible(false)
     lAnim.value = width
-  }
+  }, [])
 
   return <Animated.View style={[extraStyles, styles.container, animStyle]}>
     <View style={styles.flexLogoAndIcon}>
@@ -65,7 +65,7 @@ export default function Screen({
       </View>
       {component}
   </Animated.View>
-}
+})
 
 const styles = StyleSheet.create({
   container: {

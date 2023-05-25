@@ -16,11 +16,8 @@ export default function TabsScreen() {
   function addTab() {
     setTabs((currTabs) => [
       ...currTabs,
-      { tabName: 'Default Search Engine', tabUrl: 'https://wiki.com/' },
+      { tabName: 'First | Products', tabUrl: 'https://google.com/', visible: true },
     ])
-    // setShowScreens(currValue => ({...currValue, mainPage: true, tabs: false}))
-    // setRoute("mainPage")
-    // setPrevRoute("tabs")
   }
   
   
