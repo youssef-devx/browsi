@@ -19,7 +19,8 @@ export default function BookMarksScreen() {
           isDark={isDark}
           component={<Component bookMarks={bookMarks} setBookMarks={setBookMarks} />}
           title="BookMarks"
-          iconName="trash"
+          iconName="trash-2"
+          iconSize={24}
           iconOnPress={deleteAll}
           screenVisible={bookMarksVisible}
           setScreenVisible={setBookMarksVisible}

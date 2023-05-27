@@ -1,5 +1,6 @@
-import { createContext, useState } from 'react';
-export const MainContext = createContext({});
+import { Feather } from '@expo/vector-icons'
+import { createContext, useState } from 'react'
+export const MainContext = createContext({})
 
 export default function MainContextProvider({ children }) {
   const [isDark, setIsDark] = useState(true)
@@ -7,35 +8,56 @@ export default function MainContextProvider({ children }) {
   const [historyVisible, setHistoryVisible] = useState(false)
   const [bookMarksVisible, setBookMarksVisible] = useState(false)
   const [settingsVisible, setSettingsVisible] = useState(false)
-  const [route, setRoute] = useState("tabs")
-  const [searchQuery, setSearchQuery] = useState('')
   const [pinnedWebsites, setPinnedWebsites] = useState([
-    { siteTitle: 'Starting Page', siteUrl: 'mainPage' },
-    { siteTitle: 'Google Search', siteUrl: 'https://google.com/' },
-    { siteTitle: 'Youtube | Videos', siteUrl: 'https://youtube.com/' },
-    { siteTitle: 'Amazon | Products', siteUrl: 'https://amazon.com/' },
-  ]);
+    { pageTitle: 'Google', pageUrl: 'https://google.com/', favIcon: "" },
+    { pageTitle: 'Youtube | Videos', pageUrl: 'https://youtube.com/', favIcon: "" },
+    { pageTitle: 'Wiki', pageUrl: 'https://wiki.com/', favIcon: "" },
+    { pageTitle: 'Wiki', pageUrl: 'https://wiki.com/', favIcon: "" },
+    { pageTitle: 'Wiki', pageUrl: 'https://wiki.com/', favIcon: "" },
+    { pageTitle: 'Wiki', pageUrl: 'https://wiki.com/', favIcon: "" },
+  ])
   const [tabs, setTabs] = useState([
-    { tabName: 'Google Search', tabUrl: 'https://alsdkfj.com/', visible: false },
-    { tabName: 'Youtube | Videos', tabUrl: 'https://laskdf.co/', visible: false },
-    { tabName: 'Amazon | Products', tabUrl: 'https://dsfa.com/', visible: false },
-    { tabName: 'First | Products', tabUrl: 'https://asdfas.com/', visible: false },
-  ]);
+    { tabName: 'Google', tabUrl: 'https://google.com/', visible: false },
+    { tabName: 'Facebook', tabUrl: 'https://facebook.com/', visible: false },
+    { tabName: 'twitter', tabUrl: 'https://twitter.com/', visible: false },
+    { tabName: 'Speedtest', tabUrl: 'https://speedtest.net/', visible: false },
+  ])
   const [history, setHistory] = useState([
-    { pageTitle: 'Starting Page', pageUrl: 'https://wiki.com/' },
-    { pageTitle: 'Google Search', pageUrl: 'https://wiki.com/' },
-    { pageTitle: 'Youtube | Videos', pageUrl: 'https://wiki.com/' },
-    { pageTitle: 'Amazon | Products', pageUrl: 'https://wiki.com/' },
+    { pageTitle: 'Google', pageUrl: 'https://google.com/' },
+    { pageTitle: 'Facebook', pageUrl: 'https://facebook.com/' },
+    { pageTitle: 'Youtube | Videos', pageUrl: 'https://youtube.com/' },
+    { pageTitle: 'Wiki | Products', pageUrl: 'https://wiki.com/' },
   ])
   const [bookMarks, setBookMarks] = useState([
-    { pageTitle: 'Starting Page', pageUrl: 'https://wiki.com/' },
-    { pageTitle: 'Google Search', pageUrl: 'https://wiki.com/' },
-    { pageTitle: 'Youtube | Videos', pageUrl: 'https://wiki.com/' },
-    { pageTitle: 'Amazon | Products', pageUrl: 'https://wiki.com/' },
+    { pageTitle: 'Google', pageUrl: 'https://google.com/' },
+    { pageTitle: 'Fabeook', pageUrl: 'https://facebook.com/' },
+    { pageTitle: 'Youtube | Videos', pageUrl: 'https://youtube.com/' },
+    { pageTitle: 'Wiki', pageUrl: 'https://wiki.com/' },
   ])
   const [settings, setSettings] = useState([
     { setting: 'Dark Theme', component: "checkbox", value: true },
     { setting: 'Short Bottom Panel', component: "checkbox", value: false },
+  ])
+  const [showBottomSheet, setShowBottomSheet] = useState(false)
+  const [showSearchBar, setShowSearchBar] = useState(true)
+  const [sheetArr, setSheetArr] = useState([
+    { label: "History",
+      icon: <Feather name="clock" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
+      onPress: () => {setHistoryVisible(true);hideWebViews();setShowBottomSheet(false)}
+    },
+    { label: "BookMarks",
+      icon: <Feather name="bookmark" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
+      onPress: () => {setBookMarksVisible(true);hideWebViews();setShowBottomSheet(false)}
+    },
+    { label: "Settings",
+      icon: <Feather name="settings" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
+      onPress: () => {setSettingsVisible(true);hideWebViews();setShowBottomSheet(false)}
+    },
+  ])
+  const [searchHistory, setSearchHistory] = useState([
+    {value: "history1"},
+    {value: "history2"},
+    {value: "history3"},
   ])
 
   const MainContextStates = {
@@ -49,10 +71,10 @@ export default function MainContextProvider({ children }) {
     setBookMarksVisible,
     settingsVisible,
     setSettingsVisible,
-    route,
-    setRoute,
-    searchQuery,
-    setSearchQuery,
+    showBottomSheet,
+    setShowBottomSheet,
+    sheetArr,
+    setSheetArr,
     tabs,
     setTabs,
     history,
@@ -62,20 +84,18 @@ export default function MainContextProvider({ children }) {
     settings,
     setSettings,
     pinnedWebsites,
-    setPinnedWebsites
-  };
+    setPinnedWebsites,
+    searchHistory,
+    setSearchHistory,
+    showSearchBar,
+    setShowSearchBar,
+  }
 
-  /*// console.log('Previous route', prevRoute, showScreens[prevRoute])
-  // console.log('Current route', route, showScreens[route])
-  console.log(Object.keys(prevRoutes).map(x => [x, showScreens[x]]))
-  console.log('Previous routes', route, prevRoutes)*/
-  // console.log("##########################")
-  // console.log("Going from:", prevRoutes[route])
-  // console.log("Arriving at:", route)
-  // console.log(showScreens)
-  // console.log(prevRoutes)
-  // console.log(route)
-  // console.log("##########################")
+  function hideWebViews() {
+    setTabs((currTabs) => [...currTabs.map(currTab => currTab.visible === true ? {
+      ...currTab, visible: false
+    } : currTab )])
+  }
 
   return <MainContext.Provider value={MainContextStates}>{children}</MainContext.Provider>
 }

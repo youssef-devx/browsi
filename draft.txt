@@ -174,3 +174,14 @@ DATA_STRUCTER:
     },
     ...
   ]
+
+########################################################33
+
+Settings:
+  - ...Previous ones.
+  - Search Parameters:
+    - Country,
+    - Language,
+    - ...
+  
+  

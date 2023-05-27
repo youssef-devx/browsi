@@ -1,0 +1,8 @@
+  -Set domstorage to true.
+  -Add progress bar.
+  -Set new sheetArr when rendering a webview.
+  -Add more settings and make them functionable.
+  -Render pinnedWebsites.
+  -Style history and bookmakrs and make them navigatable.
+  -Check if webview rendering mobile version.
+  -Add ability to display webview in mobile and pc version.

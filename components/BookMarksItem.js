@@ -11,14 +11,6 @@ export default memo(function BookMarksItem({
   pageIdx,
 }) {
   const { setTabs, setBookMarks } = useContext(MainContext)
-  const [show, setShow] = useState(false);
-
-  const showOrHideStyles = useMemo(() => ({
-    backgroundColor: isDark ? "#171717" : "#f7f7f7",
-    opacity: show ? 1 : 0,
-    bottom: show ? 56 : -100,
-    right: show ? 12 : -100,
-  }), [isDark])
 
   function deletePage() {
     setBookMarks((currBookMarks) => [
@@ -27,13 +19,7 @@ export default memo(function BookMarksItem({
   }
 
   function naviteToPage() {
-    // if (!isWebView) setRoute("mainPage");
-    // setUrl(tabUrl);
-    // setRoute("webpage");
-    /* setTabs(currVals => ({
-      ...currVals,
-      { tabName: pageTitle, tabUrl: pageUrl, visible: true }
-    }))*/
+    
   }
 
   return (
@@ -47,7 +33,7 @@ export default memo(function BookMarksItem({
       <View style={styles.more}>
         <View
           style={styles.pageOptions}
-          onPress={() => setShow((currShow) => !currShow)}
+          onPress={() => {}}
         >
           <Feather
             name="more-vertical"
@@ -55,24 +41,8 @@ export default memo(function BookMarksItem({
             color={isDark ? "grey" : "#0b0b0c"}
           />
         </View>
-        <View style={[showOrHideStyles, styles.menu]}>
-          <View style={styles.menuItem} onPress={deletePage}>
-            <Feather
-              name="trash"
-              size={24}
-              color={isDark ? "#ffffff" : "#0b0b0c"}
-            />
-            <Text style={styles.listItem}>Trash</Text>
-          </View>
-          <View style={styles.menuItem}>
-            <Feather
-              name="copy"
-              size={24}
-              color={isDark ? "#ffffff" : "#0b0b0c"}
-            />
-            <Text style={styles.listItem}>Copy Link</Text>
-          </View>
-        </View>
+            {/* <Text style={styles.listItem}>Trash</Text>
+            <Text style={styles.listItem}>Copy Link</Text> */}
       </View>
     </TouchableOpacity>
   );
