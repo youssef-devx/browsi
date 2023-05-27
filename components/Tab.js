@@ -1,73 +1,81 @@
-import { useContext, useState, useMemo, memo } from 'react'
-import { TouchableOpacity, View, Text, StyleSheet, useWindowDimensions } from 'react-native'
-import { Feather } from '@expo/vector-icons'
-import { MainContext } from '../MainContext'
+import { useContext, useState, useMemo, memo } from "react"
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  StyleSheet,
+  useWindowDimensions,
+  Image,
+} from "react-native"
+import { Feather } from "@expo/vector-icons"
+import { MainContext } from "../MainContext"
 
-export default memo(function Tab({ marginRight, tabName, idx }) {
-  const [show, setShow] = useState(false)
+export default function Tab({ marginRight, tabName, idx }) {
   const { isDark, tabs, setTabs } = useContext(MainContext)
-  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions()
+  const { width: SCREEN_WIDTH } = useWindowDimensions()
   const TAB_WIDTH = (SCREEN_WIDTH - 40 - 12) / 2
-  // const TAB_WIDTH = "48%"
-  // const TAB_WIDTH = (SCREEN_WIDTH / 2) - (marginRight) - 20
-
-  const showOrHideStyles = {
-    bottom: show ? 56 : -100,
-    right: show ? 12 : -100,
-  }
 
   function deleteTab() {
     // setTabs((currTabs) => [...currTabs.filter((_, tIdx) => tIdx !== idx)])
   }
 
   function showWebView() {
-    setTabs((currTabs) => [...currTabs.map((currTab, tIdx) => tIdx === idx ? {
-    ...currTab, visible: true
-    } : currTab )])
-  }
-  
-
-  function navigateToTab() {
-    const isWebView = tabUrl !== "mainPage"
-
-    if(!isWebView) {
-      setRoute("mainPage")
-      // setTabs(currTabs => {
-      //   const theRoute = currTabs.find(tab => tab.tabIdx === tabIdx)
-      //   return [...currTabs.filter(tab => tab.tabIdx !== tabIdx), theRoute]
-      // })
-      // ///////////////
-      setShowScreens(currValue => ({...currValue, mainPage: true, tabs: false}))
-      setPrevRoute("tabs")
-    } else {
-      setUrl(tabUrl)
-      // /////////////
-      setShowScreens(currValue => ({...currValue, webPagesRouter: true, tabs: false}))
-      setRoute("webPagesRouter")
-      setPrevRoute("tabs")
-    }
+    setTabs((currTabs) => [
+      ...currTabs.map((currTab, tIdx) =>
+        tIdx === idx
+          ? {
+              ...currTab,
+              visible: true,
+            }
+          : currTab
+      ),
+    ])
   }
 
-  return <TouchableOpacity
-      style={[{
-        backgroundColor: isDark ? '#171717' : '#f7f7f7',
-        width: TAB_WIDTH, height: TAB_WIDTH, marginRight }, styles.tab]}
+  return (
+    <TouchableOpacity
+      style={[
+        {
+          backgroundColor: isDark ? "#171717" : "#f7f7f7",
+          width: TAB_WIDTH,
+          height: TAB_WIDTH,
+          marginRight,
+        },
+        styles.tab,
+      ]}
       onPress={showWebView}
     >
-    <View
-      style={{
-        flex: 1,
-        borderTopLeftRadius: 12,
-        borderTopRightRadius: 12,
-      }}
+      <View
+        style={{
+          flex: 1,
+          borderTopLeftRadius: 12,
+          borderTopRightRadius: 12,
+        }}
       >
-      <Feather name="globe" size={40} color={isDark ? "grey" : "#0b0b0c"}
-          style={{top: "50%", left: "50%", transform: [{translateY: -(40 / 2)}, {translateX: -(40 / 2)}]}}
-        />
-    </View>
-    <Text numberOfLines={1} style={[{ color: isDark ? 'grey' : '#0b0b0c' }, styles.tabName]}>{tabName}</Text>
-  </TouchableOpacity>
-})
+      { tabs[idx].favIcon ? <Image source={{uri: tabs[idx].favIcon}}
+        style={{width: 40, height: 40, borderRadius: 8, top: "50%",
+        left: "50%",
+        transform: [{ translateY: -(40 / 2) }, { translateX: -(40 / 2) }]
+        }} /> : <Feather
+        name="globe"
+        size={40}
+        color={isDark ? "grey" : "#0b0b0c"}
+        style={{
+          top: "50%",
+          left: "50%",
+          transform: [{ translateY: -(40 / 2) }, { translateX: -(40 / 2) }],
+        }}
+      />}
+      </View>
+      <Text
+        numberOfLines={1}
+        style={[{ color: isDark ? "grey" : "#0b0b0c" }, styles.tabName]}
+      >
+        {tabName}
+      </Text>
+    </TouchableOpacity>
+  )
+}
 
 const styles = StyleSheet.create({
   tab: {
@@ -75,24 +83,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderRadius: 12,
   },
-  webView: {
-    flex: 1,
-  },
   tabName: {
     width: "100%",
     fontSize: 12,
     padding: 12,
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
-    backgroundColor: "#292929"
+    backgroundColor: "#292929",
   },
-  more: { position: 'relative' },
-  menu: {
-    flex: 1,
-    gap: 12,
-    padding: 12,
-    borderRadius: 12,
-    position: 'absolute',
-  },
-  menuItem: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }
 })

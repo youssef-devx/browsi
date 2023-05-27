@@ -1,5 +1,5 @@
-import { useState } from "react"
-import {View, Text, Image, StyleSheet, TouchableOpacity} from "react-native"
+import { useState, useContext } from "react"
+import {View, Text, Image, StyleSheet, TouchableOpacity,useWindowDimensions} from "react-native"
 import Constants from 'expo-constants';
 import { Feather } from "@expo/vector-icons";
 import Animated, {
@@ -8,47 +8,69 @@ import Animated, {
   useAnimatedStyle,
   Easing,
 } from 'react-native-reanimated'
+import { MainContext } from "./MainContext";
 
-export default function SearchBar({ isDark, url, setUrl, webViewRef, webViewProps, setWebViewProps, message }) {
-  // const slideUpVal = useSharedValue(webViewProps.loading ?  : 0)
-  const [favicon, setFavicon] = useState("")
-  // console.log(message)
+export default function SearchBar({ isDark, url, setUrl, webViewRef, webViewProps }) {
+  const { showSearchBar } = useContext(MainContext)
+  const { width: SCREEN_WIDTH } = useWindowDimensions()
+  const BAR_WIDTH = 85 * SCREEN_WIDTH / 100
+  const yAnim = useSharedValue(showSearchBar ? Constants.statusBarHeight + 12 : -56)
+  const wAnim = useSharedValue(webViewProps.progress ? (webViewProps.progress * 100) * BAR_WIDTH / 100 : 0)
 
-  function injectJS() {
-    // webViewRef.current.injectJavaScript(`window.webkit.messageHandlers.ReactNativeWebView.postMessage("hello apple pay")`)
+  const searchBarStyle = useAnimatedStyle(() => {
+    return {
+      top: withTiming(yAnim.value, { duration: 150 }),
+    }
+  })
+  const progressBarStyle = useAnimatedStyle(() => {
+    return {
+      width: withTiming(wAnim.value, { duration: 100 }),
+    }
+  })
+
+  yAnim.value = showSearchBar ? Constants.statusBarHeight + 12 : -56
+  wAnim.value = webViewProps.progress ? (webViewProps.progress * 100) * BAR_WIDTH / 100 : 0
+
+  function onReloadOrStopReload (){
+    wAnim.value = 0
+    webViewProps.loading ? webViewRef.current.stopLoading() : webViewRef.current.reload()
   }
 
-  return <View style={[{ backgroundColor: isDark ? '#171717' : '#fdfdfd' } , styles.searchBar]}>
+  return <Animated.View style={[{ width: BAR_WIDTH, backgroundColor: isDark ? '#171717' : '#fdfdfd' } , styles.searchBar, searchBarStyle]}>
     <View style={{flexDirection: "row", alignItems: "center" }}>
-      { message ? <Image source={{uri: message}}
-       style={{width: 28, height: 28, borderRadius: 8}} /> : <Feather
+      { webViewProps.favIcon ? <Image source={{uri: webViewProps.favIcon}}
+        style={{width: 28, height: 28, borderRadius: 8}} /> : <Feather
         name="globe"
         size={28}
         color={isDark ? "grey" : "white"}
       />}
       <TouchableOpacity style={{marginLeft: 12}} onPress={() => {setUrl("https://wiki32.com")}}>
-        <Text style={{color: isDark ? "grey" : "#0b0b0c"}}>{webViewProps.title}</Text>
+        <Text style={{ width: BAR_WIDTH - 100, color: isDark ? "grey" : "#0b0b0c"}} numberOfLines={1}>{webViewProps.title}</Text>
       </TouchableOpacity>
     </View>
-    <TouchableOpacity style={{alignSelf: "center"}} onPress={() => webViewProps.loading ? webViewRef.current.stopLoading() : webViewRef.current.reload()}>
+    <TouchableOpacity style={{alignSelf: "center"}} onPress={onReloadOrStopReload}>
       <Feather name={webViewProps.loading ? "x" : "rotate-ccw"} size={24} color={isDark ? 'grey' : '#0b0b0c'}/>
     </TouchableOpacity>
-  </View>
+    { webViewProps.progress ? <Animated.View style={[styles.progressBar, progressBarStyle]}/> : null }
+  </Animated.View>
 }
 
 const styles = StyleSheet.create({
   searchBar: {
     position: "absolute",
     zIndex: 100,
-    width: "85%",
     flexDirection: "row",
     alignSelf: "center",
     justifyContent: "space-between",
-    top: Constants.statusBarHeight + 12,
     padding: 12,
-    borderRadius: 12
+    borderRadius: 12,
   },
-  title: {
-    backgroundColor: 'red',
+  progressBar: {
+    position: "absolute",
+    bottom: 0,
+    backgroundColor: 'yellow',
+    height: 4,
+    borderBottomLeftRadius: 6,
+    borderBottomRightRadius: 6,
   }
 })
