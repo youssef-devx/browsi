@@ -1,25 +1,29 @@
 import { useContext, useState, useEffect, useMemo } from 'react'
 import { Keyboard, TouchableWithoutFeedback, Platform, BackHandler, Text, TextInput, TouchableOpacity, View, StyleSheet, useWindowDimensions } from 'react-native'
 import Constants from 'expo-constants'
-import PinnedSites from './components/PinnedSites'
+import PinnedWebSites from './components/PinnedWebSites'
 import BottomPanel from './components/BottomPanel'
 import { Feather } from '@expo/vector-icons'
 import { MainContext } from "./MainContext"
-import { SERP_API_KEY } from "@env"
 
+const SERP_API_KEY = "116884dbb870ccefa61e93febe4a5e76343adc5a8e73d38caff77fdced70e0bd"
 
 export default function MainScreen() {
   const {
     isDark,
-    tabs,
     setTabs,
-    setTabsVisible
+    tabsVisible,
+    setTabsVisible,
+    setHistory,
+    setSheetArr,
+    setHistoryVisible,
+    setBookMarksVisible,
+    setSettingsVisible,
+    setShowBottomSheet,
   } = useContext(MainContext)
   const [searchQuery, setSearchQuery] = useState("")
   const [showSuggestions, setShowSuggestions] = useState(false)
-  const [suggestions, setSuggestions] = useState([
-    {value: "Start typing to show suggestions."}
-  ])
+  const [suggestions, setSuggestions] = useState([])
   const { width, height } = useWindowDimensions()
 
   const extraStyles = useMemo(() => ({
@@ -28,12 +32,27 @@ export default function MainScreen() {
     height,
   }), [isDark])
 
-  const suggestionsStyles = {
+  const suggestionsStyles = useMemo(() => ({
     backgroundColor: isDark ? "#171717" : "#ffffff",
     opacity: showSuggestions ? 1 : 0
-  }
+  }) , [isDark, showSuggestions])
 
   useEffect(() => {
+    !tabsVisible && setSheetArr([
+      { label: "History",
+        icon: <Feather name="clock" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
+        onPress: () => {setHistoryVisible(true);hideWebViews();setShowBottomSheet(false)}
+      },
+      { label: "BookMarks",
+        icon: <Feather name="bookmark" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
+        onPress: () => {setBookMarksVisible(true);hideWebViews();setShowBottomSheet(false)}
+      },
+      { label: "Settings",
+        icon: <Feather name="settings" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
+        onPress: () => {setSettingsVisible(true);hideWebViews();setShowBottomSheet(false)}
+      }
+    ])
+
     if (Platform.OS === 'android') {
       BackHandler.addEventListener('hardwareBackPress', () => {
         return true
@@ -44,21 +63,28 @@ export default function MainScreen() {
         })
       }
     }
-  }, [])
+  }, [tabsVisible])
+
+  function hideWebViews() {
+    setTabs((currTabs) => [...currTabs.map(currTab => currTab.visible === true ? {
+      ...currTab, visible: false
+    } : currTab )])
+  }
 
   async function getSuggestions(str) {
     const data = await fetch(`https://serpapi.com/search.json?engine=google_autocomplete&q=${str}&api_key=${SERP_API_KEY}`)
                         .then(res => res.json())
                         .catch(err => console.log(err))
-    data["suggestions"].length > 0 && setSuggestions(data["suggestions"].slice(10))
+    data["suggestions"] && setSuggestions(data["suggestions"].slice(10))
   }
 
   function onChangeText(str) {
     setShowSuggestions(true)
-    setTimeout(() => {setSearchQuery(str);getSuggestions(str)}, 250)
+    setSearchQuery(str)
+    setTimeout(() => getSuggestions(str), 250)
   }
 
-  function onSuggestionPress(query) {
+  function goToSearchQuery(query) {
     setTabsVisible(true)
     setTabs(currVal => ([
       ...currVal,
@@ -66,13 +92,16 @@ export default function MainScreen() {
     ]))
     Keyboard.dismiss()
     setShowSuggestions(false)
+    setHistory(currVal => ([
+      { pageTitle: `${query} - Google Search`, pageUrl: `https://google.com/search?q=${query}` },
+      ...currVal
+    ]))
   }
 
   return (
     <TouchableWithoutFeedback onPress={() => {setShowSuggestions(false);Keyboard.dismiss()}}>
       <View style={[extraStyles, styles.container]}>
         <Text style={[{color: isDark ? "#ffffff" : "#0b0b0c"}, styles.logo]}>Browsi</Text>
-        {/* <PinnedSites isDark={isDark}/> */}
         <View style={styles.searchContainer}>
           <Feather
             name="search"
@@ -85,10 +114,12 @@ export default function MainScreen() {
             placeholder="Search any thing"
             placeholderTextColor={isDark ? "grey" : "#ffffff"}
             value={searchQuery}
-            onChangeText={onChangeText}
             spellCheck={true}
+            enterKeyHint="search"
+            onChangeText={onChangeText}
             onFocus={() => setShowSuggestions(true)}
             onPressIn={() => setShowSuggestions(true)}
+            onSubmitEditing={({ nativeEvent }) => goToSearchQuery(nativeEvent.text)}
           />
           {searchQuery && <Feather
             name="x"
@@ -98,16 +129,19 @@ export default function MainScreen() {
             onPress={() => setSearchQuery("")}
           />}
           <View pointerEvents={showSuggestions ? "auto" : "none" } style={[suggestionsStyles, styles.suggestions]}>
-            {suggestions.map((suggestion, idx) => (
+            {suggestions.length > 0 ? suggestions.map((suggestion, idx) => (
               <TouchableOpacity
                 key={idx}
                 style={{paddingTop: idx === 0 ? 16 : 0, paddingHorizontal: 16, paddingBottom: 16}}
-                onPress={() => onSuggestionPress(suggestion.value)}>
+                onPress={() => goToSearchQuery(suggestion.value)}>
                 <Text style={{color: isDark ? "grey" : "#0b0b0c"}}>{suggestion.value}</Text>
               </TouchableOpacity>
-            ))}
+            )) : <TouchableOpacity style={{ padding: 16 }}>
+                  <Text style={{color: isDark ? "grey" : "#0b0b0c"}}>No suggestions were found!</Text>
+                </TouchableOpacity>}
           </View>
         </View>
+        <PinnedWebSites />
         <BottomPanel isDark={isDark} webViewProps={{}} onAndroidBackPress={() => console.log('From main screen')}/>
       </View>
     </TouchableWithoutFeedback>
@@ -133,13 +167,14 @@ export function Button({ style, children }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "space-between",
     position: "absolute",
-    alignItems: 'center',
-    padding: 32,
     paddingTop: Constants.statusBarHeight,
+    paddingHorizontal: 32,
+    paddingVertical: 136,
   },
   logo: {
-    margin: 24,
+    marginTop: 96,
     fontSize: 40,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -149,7 +184,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "center",
-    marginTop: 64,
   },
   searchInput: {
     borderRadius: 12,

@@ -14,6 +14,7 @@ export default memo(function Screen({
     component,
     title,
     iconName,
+    iconSize,
     iconOnPress,
     screenVisible,
     setScreenVisible,
@@ -21,13 +22,6 @@ export default memo(function Screen({
   const { width, height } = useWindowDimensions()
   const lAnim = useSharedValue(screenVisible ? 0 : width)
 
-  //   // Will change slideAnim value to 0 in 3 seconds
-  //   Animated.timing(slideBackAnim, {
-  //     toValue: 0,
-  //     duration: 1500,
-  //     useNativeDriver: true,
-  //   }).start()
-  // }*/
   const extraStyles = useMemo(() => ({
     backgroundColor: isDark ? '#0b0b0c' : '#ffffff',
     width, height
@@ -59,7 +53,7 @@ export default memo(function Screen({
           </Text>
         </View>
         <Feather
-          name={iconName} size={32} color={isDark ? "grey" : "#0b0b0c"}
+          name={iconName} size={iconSize} color={isDark ? "grey" : "#0b0b0c"}
           onPress={iconOnPress}
         />
       </View>

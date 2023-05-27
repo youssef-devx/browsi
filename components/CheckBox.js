@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity, StyleSheet } from "react-native"
 import { useState, meom } from "react";

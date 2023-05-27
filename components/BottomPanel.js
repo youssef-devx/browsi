@@ -1,5 +1,5 @@
 import { Feather } from '@expo/vector-icons'
-import { useContext, useState, useMemo, memo } from 'react'
+import { useContext, useState, useMemo, memo, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import Constants from 'expo-constants'
 import { MainContext } from '../MainContext'
@@ -54,6 +54,7 @@ export default memo(function BottomPanel({ webViewProps, onAndroidBackPress }) {
     setShowBottomSheet,
     tabs,
     setTabs,
+    setSheetArr
   } = useContext(MainContext)
   const { canGoBack, canGoForward } = webViewProps
   const forwardIconColor =  isDark ? `#ffffff${canGoForward ? "" : "50"}` : `#0b0b0c${!canGoForward ? "" : "05"}`

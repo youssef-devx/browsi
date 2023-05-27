@@ -1,5 +1,5 @@
-import { useContext, useState, useRef, useEffect, memo } from "react"
-/*import { TouchableWithoutFeedback, Keyboard, View, StyleSheet, BackHandler, Platform, useWindowDimensions } from "react-native"
+import { useContext, useState, useRef, useEffect, memo, useMemo } from "react"
+import { TouchableWithoutFeedback, Keyboard, View, StyleSheet, BackHandler, Platform, useWindowDimensions } from "react-native"
 import Constants from 'expo-constants'
 import SearchBar from "./SearchBar"
 import BottomPanel from "./components/BottomPanel"
@@ -21,11 +21,16 @@ export default memo(function WebViewScreen({ idx }) {
     tabs,
     setTabs,
     setTabsVisible,
-    setSheetArr
+    bookMarks,
+    setBookMarks,
+    pinnedWebsites,
+    setPinnedWebsites,
+    setSheetArr,
+    setShowBottomSheet,
+    setShowSearchBar
   } = useContext(MainContext)
   const [url, setUrl] = useState(tabs[idx].tabUrl)
   const [title, setTitle] = useState("")
-  const [message, setMessage] = useState("")
   const [webViewProps, setWebViewProps] = useState({
     canGoBack: false,
     canGoForward: false,
@@ -33,13 +38,11 @@ export default memo(function WebViewScreen({ idx }) {
   })
   const [searchQuery, setSearchQuery] = useState("")
   const [showSuggestions, setShowSuggestions] = useState(false)
-  const [suggestions, setSuggestions] = useState([
-    {value: "Start typing to show suggestions."}
-  ])
+  const [suggestions, setSuggestions] = useState([])
   const {width, height} = useWindowDimensions()
-  const TAB_WIDTH = (width - 40 - 12) / 2
-  const DEFAULT_TOP = 100 * idx
-  const DEFAULT_LEFT = idx % 2 === 0 ? 20 : 20 + TAB_WIDTH + 12
+  const TAB_WIDTH = useMemo(() => (width - 40 - 12) / 2, [width])
+  const DEFAULT_TOP = useMemo(() => 100 * idx, [idx])
+  const DEFAULT_LEFT = useMemo(() => idx % 2 === 0 ? 20 : 20 + TAB_WIDTH + 12, [idx, TAB_WIDTH])
   const oAnim = useSharedValue(0)
   const xAnim = useSharedValue(DEFAULT_LEFT)
   const yAnim = useSharedValue(DEFAULT_TOP)
@@ -48,14 +51,23 @@ export default memo(function WebViewScreen({ idx }) {
   const brAnim = useSharedValue(12)
   const dropDownYAnim = useSharedValue(webViewProps.loading ? 40 : Constants.statusBarHeight + 12)
   const webViewRef = useRef(null)
+
   const jsCode = `
-  window.ReactNativeWebView.postMessage(window.document.querySelector('head link[rel="shortcut icon"]').href)
+  const selector = 'head link[rel="shortcut icon"], head link[rel="icon"], head link[rel="apple-touch-icon"]'
+  const imagesTypes = [".ico", ".png", ".gif", ".svg"]
+  let favIcon = ""
+
+  const res = [...document.querySelectorAll(selector)].map(l => {
+    return imagesTypes.map(t => l.href && l.href.endsWith(t) ? l.href : null)
+  }).flat().filter(l => l && l)
+  
+  favIcon = res.length > 0 ? res[0] : ""
+  window.ReactNativeWebView.postMessage(favIcon)
   true // note: this is required, or you'll sometimes get silent failures
 `
-
   const animStyle = useAnimatedStyle(() => {
     return {
-      opacity: withDelay(150, withTiming(oAnim.value, { duration: 150 })),
+      opacity: withDelay(75, withTiming(oAnim.value, { duration: 75 })),
       top: withTiming(yAnim.value, { duration: 150 }),
       left: withTiming(xAnim.value, { duration: 150 }),
       width: withTiming(wAnim.value, { duration: 150 }),
@@ -72,23 +84,38 @@ export default memo(function WebViewScreen({ idx }) {
     return false
   }
 
-  oAnim.value = tabs[idx].visible ? 1 : 0
-  xAnim.value = tabs[idx].visible ? 0 : DEFAULT_LEFT
-  yAnim.value = tabs[idx].visible ? 0 : DEFAULT_TOP
-  wAnim.value = tabs[idx].visible ? width : TAB_WIDTH
-  hAnim.value = tabs[idx].visible ? height : 128
-  brAnim.value = tabs[idx].visible ? 0 : 12
-  dropDownYAnim.value = webViewProps.loading ? -40 : Constants.statusBarHeight
+  // oAnim.value = tabs[idx].visible ? 1 : 0
+  // xAnim.value = tabs[idx].visible ? 0 : DEFAULT_LEFT
+  // yAnim.value = tabs[idx].visible ? 0 : DEFAULT_TOP
+  // wAnim.value = tabs[idx].visible ? width : TAB_WIDTH
+  // hAnim.value = tabs[idx].visible ? height : 128
+  // brAnim.value = tabs[idx].visible ? 0 : 12
+  // dropDownYAnim.value = webViewProps.loading ? -40 : Constants.statusBarHeight
+
+  oAnim.value = useMemo(() => tabs[idx].visible ? 1 : 0, [tabs[idx].visible, ])
+  xAnim.value = useMemo(() => tabs[idx].visible ? 0 : DEFAULT_LEFT, [tabs[idx].visible, DEFAULT_LEFT])
+  yAnim.value = useMemo(() => tabs[idx].visible ? 0 : DEFAULT_TOP, [tabs[idx].visible, DEFAULT_TOP])
+  wAnim.value = useMemo(() => tabs[idx].visible ? width : TAB_WIDTH, [tabs[idx].visible, width, TAB_WIDTH])
+  hAnim.value = useMemo(() => tabs[idx].visible ? height : 128, [tabs[idx].visible, height])
+  brAnim.value = useMemo(() => tabs[idx].visible ? 0 : 12, [tabs[idx].visible, ])
+  dropDownYAnim.value = useMemo(() => webViewProps.loading ? -40 : Constants.statusBarHeight, [webViewProps.loading, Constants.statusBarHeight])
 
   useEffect(() => {
-    // setSheetArr(currVal => ([
-    //   ...currVal,
-    //   { label: `${webViewProps.loading ? "Hide" : "Show"} SearchBar`,
-    //     icon: <Feather name="search" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
-    //     onPress: () => {setShowStatusBar(true);setShowBottomSheet(false)},
-    //     showOption: () => tabs.find(tab => tab.visible === true).length > 0
-    //   }
-    // ]))
+    console.log(url, bookMarks.map((b, i) => {console.log(i === idx && b.pageUrl);return b.pageUrl}).includes(url))
+    tabs[idx].visible && setSheetArr([
+      { label: "Toogle SearchBar",
+        icon: <Feather name="search" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
+        onPress: () => {setShowSearchBar(currVal => !currVal);setShowBottomSheet(false)},
+      },
+      { label: bookMarks.map(b => b.pageUrl).includes(url) ? "Unbookmark" : "Bookmark",
+        icon: <Feather name="bookmark" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
+        onPress: () => {toggleToBookMarks();setShowBottomSheet(false)}
+      },
+      { label: pinnedWebsites.map(p => p.pageUrl).includes(url) ? "Unpin" : "Pin",
+        icon: <Feather name={`${pinnedWebsites.map(p => p.pageUrl).includes(url) ? "minus" : "plus"}-circle`} size={24} color={isDark ? "white" : "#0b0b0c"}/>,
+        onPress: () => {toggleToPinnedWebsites();setShowBottomSheet(false)}
+      }
+    ])
 
     if (Platform.OS === 'android') {
       BackHandler.addEventListener('hardwareBackPress', onAndroidBackPress)
@@ -96,7 +123,7 @@ export default memo(function WebViewScreen({ idx }) {
         BackHandler.removeEventListener('hardwareBackPress', onAndroidBackPress)
       }
     }
-  }, [])
+  }, [tabs[idx].visible, bookMarks, pinnedWebsites])
   
   function onWebViewNavigationStateChange(navState) {
     setWebViewProps(currProps => ({
@@ -104,9 +131,45 @@ export default memo(function WebViewScreen({ idx }) {
       ...navState  
     }))
   }
+console.log(bookMarks[idx].pageUrl, url, tabs[idx].tabUrl)
+
+  function toggleToBookMarks() {
+    setBookMarks(currVal => {
+      if(bookMarks.map(b => b.pageUrl).includes(url)) {
+        return [...currVal.filter(bookMark => bookMark.pageUrl !== url)]
+      } else {
+        return [
+          { pageTitle: webViewProps.title, pageUrl: url },
+          ...currVal
+        ]
+      }
+    })
+  }
+
+  function toggleToPinnedWebsites() {
+    setPinnedWebsites(currVal => {
+      if(pinnedWebsites.length < 6) {
+        if(pinnedWebsites.map(p => p.pageUrl).includes(url)) {
+          return [...currVal.filter(pinnedWebsite => pinnedWebsite.pageUrl !== url)]
+        } else {
+          return [
+            { pageTitle: webViewProps.title, pageUrl: url },
+            ...currVal
+          ]
+        }
+      } else {
+        setBookMarks(currVal => ([
+          { pageTitle: webViewProps.title, pageUrl: url },
+          ...currVal
+        ]))
+        console.log('Saved to bookmarks')
+      }
+    })
+  }
 
   function onLoadStart(e) {
     const { nativeEvent } = e
+    setUrl(nativeEvent.url)
     setWebViewProps(currProps => ({
       ...currProps,
       title: nativeEvent.title,
@@ -126,6 +189,7 @@ export default memo(function WebViewScreen({ idx }) {
 
   function onLoadEnd(e) {
     const { nativeEvent } = e
+    setUrl(nativeEvent.url)
     setWebViewProps(currProps => ({
       ...currProps,
       title: nativeEvent.title,
@@ -136,7 +200,14 @@ export default memo(function WebViewScreen({ idx }) {
   }
 
   function onMessage(e) {
-    setMessage(e.nativeEvent.data)
+    setWebViewProps(currVal => ({
+      ...currVal,
+      favIcon: e.nativeEvent.data
+    }))
+
+    setTabs(currVal => ([
+      ...currVal.map((tab, tIdx) => tIdx === idx ? { ...tab, favIcon: e.nativeEvent.data } : tab)
+    ]))
     // console.log(e.nativeEvent.data, 'this one')
   }
 
@@ -161,7 +232,7 @@ export default memo(function WebViewScreen({ idx }) {
     Keyboard.dismiss()
     setShowSuggestions(false)
   }
-
+  
   return <Animated.View
     onPress={() => {}}
     pointerEvents={tabs[idx].visible ? "auto" : "none"}
@@ -179,7 +250,6 @@ export default memo(function WebViewScreen({ idx }) {
       webViewRef={webViewRef}
       webViewProps={webViewProps}
       setWebViewProps={setWebViewProps}
-      message={message}
     />
     <WebView
       source={{ uri: url }}
@@ -194,10 +264,10 @@ export default memo(function WebViewScreen({ idx }) {
       onLoadStart={e => onLoadStart(e)}
       injectedJavaScript={jsCode}
       onError={() => {}}
-      // onMessage={e => {console.log(e, 'ee');onMessage(e)}}
+      onMessage={onMessage}
     />
     <BottomPanel isDark={isDark} webViewProps={webViewProps} onAndroidBackPress={onAndroidBackPress}/>
   </Animated.View>
 })
 
-const styles = StyleSheet.create({})*/
+const styles = StyleSheet.create({})

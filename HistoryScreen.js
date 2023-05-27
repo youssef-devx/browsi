@@ -19,7 +19,8 @@ export default function HistoryScreen() {
           isDark={isDark}
           component={<Component history={history} />}
           title="History"
-          iconName="trash"
+          iconName="trash-2"
+          iconSize={24}
           iconOnPress={deleteAll}
           setHistory={setHistory}
           screenVisible={historyVisible}

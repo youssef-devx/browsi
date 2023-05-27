@@ -11,13 +11,15 @@ export default function TabsScreen() {
     setTabsVisible,
     tabs,
     setTabs,
+    setHistory
   } = useContext(MainContext)
   
   function addTab() {
     setTabs((currTabs) => [
       ...currTabs,
-      { tabName: 'First | Products', tabUrl: 'https://google.com/', visible: true },
+      { tabName: 'Google', tabUrl: 'https://google.com/', visible: true },
     ])
+    setHistory(currVal => ([{ pageTitle: 'Google', pageUrl: 'https://google.com/' }, ...currVal]))
   }
   
   
@@ -26,6 +28,7 @@ export default function TabsScreen() {
             component={<Component tabs={tabs} setTabs={setTabs} />}
             title={`Tabs ${tabs.length}`}
             iconName="plus"
+            iconSize={28}
             iconOnPress={addTab}
             screenVisible={tabsVisible}
             setScreenVisible={setTabsVisible}
