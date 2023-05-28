@@ -13,7 +13,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated"
 import { Feather } from "@expo/vector-icons"
-import { SERP_API_KEY } from "@env"
+const SERP_API_KEY = "116884dbb870ccefa61e93febe4a5e76343adc5a8e73d38caff77fdced70e0bd"
 
 export default memo(function WebViewScreen({ idx }) {
   const {
@@ -76,12 +76,18 @@ export default memo(function WebViewScreen({ idx }) {
     }
   })
 
-  const onAndroidBackPress = () => {
-    if (webViewRef.current) {
+  const onGoBackPress = () => {
+    if (webViewRef.current && webViewProps.canGoBack) {
       webViewRef.current.goBack()
       return true // prevent default behavior (exit app)
     }
-    return false
+  }
+
+  const onGoForwardPress = () => {
+    if (webViewRef.current && webViewProps.canGoForward) {
+      webViewRef.current.goForward()
+      return true // prevent default behavior (exit app)
+    }
   }
 
   // oAnim.value = tabs[idx].visible ? 1 : 0
@@ -101,7 +107,7 @@ export default memo(function WebViewScreen({ idx }) {
   dropDownYAnim.value = useMemo(() => webViewProps.loading ? -40 : Constants.statusBarHeight, [webViewProps.loading, Constants.statusBarHeight])
 
   useEffect(() => {
-    console.log(url, bookMarks.map((b, i) => {console.log(i === idx && b.pageUrl);return b.pageUrl}).includes(url))
+    // console.log(url, bookMarks.map((b, i) => {console.log(i === idx && b.pageUrl);return b.pageUrl}).includes(url))
     tabs[idx].visible && setSheetArr([
       { label: "Toogle SearchBar",
         icon: <Feather name="search" size={24} color={isDark ? "white" : "#0b0b0c"}/>,
@@ -116,14 +122,7 @@ export default memo(function WebViewScreen({ idx }) {
         onPress: () => {toggleToPinnedWebsites();setShowBottomSheet(false)}
       }
     ])
-
-    if (Platform.OS === 'android') {
-      BackHandler.addEventListener('hardwareBackPress', onAndroidBackPress)
-      return () => {
-        BackHandler.removeEventListener('hardwareBackPress', onAndroidBackPress)
-      }
-    }
-  }, [tabs[idx].visible, bookMarks, pinnedWebsites])
+  }, [tabs, tabs[idx].visible, bookMarks, pinnedWebsites])
   
   function onWebViewNavigationStateChange(navState) {
     setWebViewProps(currProps => ({
@@ -131,7 +130,7 @@ export default memo(function WebViewScreen({ idx }) {
       ...navState  
     }))
   }
-console.log(bookMarks[idx].pageUrl, url, tabs[idx].tabUrl)
+// console.log(bookMarks[idx], url, tabs[idx].tabUrl)
 
   function toggleToBookMarks() {
     setBookMarks(currVal => {
@@ -146,7 +145,7 @@ console.log(bookMarks[idx].pageUrl, url, tabs[idx].tabUrl)
     })
   }
 
-  function toggleToPinnedWebsites() {
+  /*function toggleToPinnedWebsites() {
     setPinnedWebsites(currVal => {
       if(pinnedWebsites.length < 6) {
         if(pinnedWebsites.map(p => p.pageUrl).includes(url)) {
@@ -165,7 +164,7 @@ console.log(bookMarks[idx].pageUrl, url, tabs[idx].tabUrl)
         console.log('Saved to bookmarks')
       }
     })
-  }
+  }*/
 
   function onLoadStart(e) {
     const { nativeEvent } = e
@@ -266,7 +265,7 @@ console.log(bookMarks[idx].pageUrl, url, tabs[idx].tabUrl)
       onError={() => {}}
       onMessage={onMessage}
     />
-    <BottomPanel isDark={isDark} webViewProps={webViewProps} onAndroidBackPress={onAndroidBackPress}/>
+    <BottomPanel isDark={isDark} webViewProps={webViewProps} onGoBackPress={onGoBackPress} onGoForwardPress={onGoForwardPress}/>
   </Animated.View>
 })
 

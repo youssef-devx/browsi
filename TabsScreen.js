@@ -22,7 +22,6 @@ export default function TabsScreen() {
     setHistory(currVal => ([{ pageTitle: 'Google', pageUrl: 'https://google.com/' }, ...currVal]))
   }
   
-  
   return <Screen
             isDark={isDark}
             component={<Component tabs={tabs} setTabs={setTabs} />}
@@ -31,7 +30,7 @@ export default function TabsScreen() {
             iconSize={28}
             iconOnPress={addTab}
             screenVisible={tabsVisible}
-            setScreenVisible={setTabsVisible}
+            onHideScreenPress={() => setTabsVisible(false)}
           />
 }
 

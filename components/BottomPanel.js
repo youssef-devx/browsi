@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   }
 })
 
-export default memo(function BottomPanel({ webViewProps, onAndroidBackPress }) {
+export default memo(function BottomPanel({ webViewProps, onGoBackPress, onGoForwardPress }) {
   const {
     isDark,
     tabsVisible,
@@ -78,14 +78,14 @@ export default memo(function BottomPanel({ webViewProps, onAndroidBackPress }) {
         <Feather
           style={[{borderColor: isDark ? "#ffffff" : "#0b0b0c"}, styles.themeIcon]}
           name="chevron-left" size={24} color={backIconColor}
-          onPress={onAndroidBackPress}
+          onPress={onGoBackPress}
         />
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelItem}>
         <Feather
           style={[{borderColor: isDark ? "#ffffff" : "#0b0b0c"}, styles.themeIcon]}
           name="chevron-right" size={24} color={forwardIconColor}
-          onPress={onAndroidBackPress}
+          onPress={onGoForwardPress}
         />
       </TouchableOpacity>
       <TouchableOpacity onPress={showTabs} style={[

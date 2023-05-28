@@ -6,7 +6,6 @@ import Screen from './components/Screen'
 
 export default function HistoryScreen() {
   const {
-    isDark,
     history,
     setHistory,
     historyVisible,
@@ -15,8 +14,9 @@ export default function HistoryScreen() {
 
   function deleteAll() {}
 
+  // onHideScreenPress = () => setHistoryVisible(false)
+
   return <Screen
-          isDark={isDark}
           component={<Component history={history} />}
           title="History"
           iconName="trash-2"
@@ -24,7 +24,7 @@ export default function HistoryScreen() {
           iconOnPress={deleteAll}
           setHistory={setHistory}
           screenVisible={historyVisible}
-          setScreenVisible={setHistoryVisible}
+          onHideScreenPress={() => setHistoryVisible(false)}
         />
 }
 

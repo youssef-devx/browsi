@@ -24,7 +24,7 @@ export default function SearchBar({ isDark, url, setUrl, webViewRef, webViewProp
   })
   const progressBarStyle = useAnimatedStyle(() => {
     return {
-      width: withTiming(wAnim.value, { duration: 100 }),
+      width: withTiming(wAnim.value, { duration: 200 }),
     }
   })
 
@@ -51,7 +51,7 @@ export default function SearchBar({ isDark, url, setUrl, webViewRef, webViewProp
     <TouchableOpacity style={{alignSelf: "center"}} onPress={onReloadOrStopReload}>
       <Feather name={webViewProps.loading ? "x" : "rotate-ccw"} size={24} color={isDark ? 'grey' : '#0b0b0c'}/>
     </TouchableOpacity>
-    { webViewProps.progress ? <Animated.View style={[styles.progressBar, progressBarStyle]}/> : null }
+    { webViewProps.progress && webViewProps.progress < 1 ? <Animated.View style={[styles.progressBar, progressBarStyle]}/> : null }
   </Animated.View>
 }
 

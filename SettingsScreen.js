@@ -1,5 +1,5 @@
 import { ScrollView } from "react-native"
-import { useContext, useMemo } from "react"
+import { useContext, useEffect, useMemo } from "react"
 import { MainContext } from "./MainContext"
 import SettingItem from "./components/SettingItem"
 import Screen from './components/Screen'
@@ -19,7 +19,7 @@ export default function SettingsScreen() {
     title="Settings"
     setSettings={setSettings}
     screenVisible={settingsVisible}
-    setScreenVisible={setSettingsVisible}
+    onHideScreenPress={() => setSettingsVisible(false)}
   />
 }
 

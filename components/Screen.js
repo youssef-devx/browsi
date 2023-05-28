@@ -1,5 +1,5 @@
-import { useMemo, useCallback, memo } from "react"
-import { Platform, useWindowDimensions, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
+import { useMemo, useContext } from "react"
+import { useWindowDimensions, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import Animated, {
   useSharedValue,
   withTiming,
@@ -8,24 +8,25 @@ import Animated, {
 } from 'react-native-reanimated'
 import Constants from 'expo-constants'
 import { Feather } from '@expo/vector-icons'
+import { MainContext } from "../MainContext"
 
-export default memo(function Screen({
-    isDark,
+export default function Screen({
     component,
     title,
     iconName,
     iconSize,
     iconOnPress,
     screenVisible,
-    setScreenVisible,
+    onHideScreenPress
   }) {
+  const { isDark, tabs, setTabs } = useContext(MainContext)
   const { width, height } = useWindowDimensions()
   const lAnim = useSharedValue(screenVisible ? 0 : width)
 
   const extraStyles = useMemo(() => ({
     backgroundColor: isDark ? '#0b0b0c' : '#ffffff',
     width, height
-  }), [isDark])
+  }), [isDark, width, height])
 
   const animStyle = useAnimatedStyle(() => {
     return {
@@ -33,15 +34,12 @@ export default memo(function Screen({
     }
   })
 
-  const hideScreen = useCallback(() => {
-    setScreenVisible(false)
-    lAnim.value = width
-  }, [])
+  lAnim.value = screenVisible ? 0 : width
 
   return <Animated.View style={[extraStyles, styles.container, animStyle]}>
     <View style={styles.flexLogoAndIcon}>
         <View style={{flexDirection: "row", alignItems: "center"}}>
-          <TouchableOpacity onPress={hideScreen}>
+          <TouchableOpacity onPress={onHideScreenPress}>
             <Feather
               name="arrow-left"
               size={28}
@@ -59,7 +57,7 @@ export default memo(function Screen({
       </View>
       {component}
   </Animated.View>
-})
+}
 
 const styles = StyleSheet.create({
   container: {

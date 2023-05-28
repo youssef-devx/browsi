@@ -6,3 +6,8 @@
   -Style history and bookmakrs and make them navigatable.
   -Check if webview rendering mobile version.
   -Add ability to display webview in mobile and pc version.
+	
+  -make sure you set the lAnim to screen width.
+  -handle tabs closing.
+  -change favicon functionality.
+  -use native drive in animations

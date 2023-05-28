@@ -6,7 +6,6 @@ import Screen from './components/Screen'
 
 export default function BookMarksScreen() {
   const {
-    isDark,
     bookMarks,
     setBookMarks,
     bookMarksVisible,
@@ -16,14 +15,13 @@ export default function BookMarksScreen() {
   function deleteAll() {}
 
   return <Screen
-          isDark={isDark}
           component={<Component bookMarks={bookMarks} setBookMarks={setBookMarks} />}
           title="BookMarks"
           iconName="trash-2"
           iconSize={24}
           iconOnPress={deleteAll}
           screenVisible={bookMarksVisible}
-          setScreenVisible={setBookMarksVisible}
+          onHideScreenPress={() => setBookMarksVisible(false)}
         />
 }
 

@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0b0b0c"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -24,11 +24,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.youssefdevx.browsi"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": "A mobile web browser."
+    "description": "A mobile web browser.",
+    "extra": {
+      "eas": {
+        "projectId": "fa127fa1-ad30-41d3-b0e0-7acfcba44d94"
+      }
+    }
   }
 }

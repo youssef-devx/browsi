@@ -17,10 +17,10 @@ export default function MainContextProvider({ children }) {
     { pageTitle: 'Wiki', pageUrl: 'https://wiki.com/', favIcon: "" },
   ])
   const [tabs, setTabs] = useState([
-    { tabName: 'Google', tabUrl: 'https://google.com/', visible: false },
-    { tabName: 'Facebook', tabUrl: 'https://facebook.com/', visible: false },
-    { tabName: 'twitter', tabUrl: 'https://twitter.com/', visible: false },
-    { tabName: 'Speedtest', tabUrl: 'https://speedtest.net/', visible: false },
+    // { tabName: 'Google', tabUrl: 'https://google.com/', visible: false },
+    // { tabName: 'Facebook', tabUrl: 'https://facebook.com/', visible: false },
+    // { tabName: 'twitter', tabUrl: 'https://twitter.com/', visible: false },
+    // { tabName: 'Speedtest', tabUrl: 'https://speedtest.net/', visible: false },
   ])
   const [history, setHistory] = useState([
     { pageTitle: 'Google', pageUrl: 'https://google.com/' },
@@ -96,6 +96,12 @@ export default function MainContextProvider({ children }) {
       ...currTab, visible: false
     } : currTab )])
   }
+
+  console.log("Tabs:", tabsVisible)
+  console.log("History:", historyVisible)
+  console.log("Bookmarks:", bookMarksVisible)
+  console.log("Settings:", settingsVisible)
+  console.log("Tabs arr:", tabs.map(t => t.visible))
 
   return <MainContext.Provider value={MainContextStates}>{children}</MainContext.Provider>
 }

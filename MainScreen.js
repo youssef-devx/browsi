@@ -53,16 +53,12 @@ export default function MainScreen() {
       }
     ])
 
-    if (Platform.OS === 'android') {
-      BackHandler.addEventListener('hardwareBackPress', () => {
-        return true
-      })
-      return () => {
-        BackHandler.removeEventListener('hardwareBackPress', () => {
-          return true
-        })
-      }
-    }
+    // if (Platform.OS === 'android') {
+    //   BackHandler.addEventListener('webViewHardwareBackPress', () => true)
+    //   return () => {
+    //     BackHandler.removeEventListener('webViewHardwareBackPress', () => true)
+    //   }
+    // }
   }, [tabsVisible])
 
   function hideWebViews() {
@@ -141,8 +137,8 @@ export default function MainScreen() {
                 </TouchableOpacity>}
           </View>
         </View>
-        <PinnedWebSites />
-        <BottomPanel isDark={isDark} webViewProps={{}} onAndroidBackPress={() => console.log('From main screen')}/>
+        {/* <PinnedWebSites /> */}
+        <BottomPanel isDark={isDark} webViewProps={{}} onAndroidBackPress={() => {}}/>
       </View>
     </TouchableWithoutFeedback>
   )
@@ -204,6 +200,7 @@ const styles = StyleSheet.create({
   },
   suggestions: {
     position: "absolute",
+    zIndex: 1,
     top: "120%",
     width: "100%",
     borderBottomLeftRadius: 12,

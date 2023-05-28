@@ -36,7 +36,7 @@ export default function BottomSheet() {
   return <TouchableWithoutFeedback onPress={makeBottomSheetVisible}>
     <Animated.View style={[styles.container, containerAnimStyle]}>
     <Animated.View stye={[styles.overlay]}/>
-    <TouchableWithoutFeedback onPress={() => {console.log('sheet clicked')}}>
+    <TouchableWithoutFeedback onPress={() => {}}>
       <Animated.View style={[extraStyles, sheetAnimStyle, styles.sheet]}>
         <View style={styles.bar}/>
         {sheetArr.map((sheetItem, idx) => (
@@ -92,5 +92,5 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: 20
    },
-  sheetItem: { flexDirection: "row" }
+  sheetItem: { flexDirection: "row", alignItems: "center" }
 })
